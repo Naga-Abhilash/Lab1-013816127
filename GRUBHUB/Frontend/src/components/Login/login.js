@@ -1,67 +1,68 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux'
-import Navbar from '../Navbar/Navbar';
-import store from '../store/store'
-import login from '../reducers/AllReducers'
+import '../../styles/styles.css';
+import { connect } from 'react-redux';
+import { login } from '../reducers/AllReducers';
+import store from '../store/store';
+import Navbar from '../Navbar/Navbar'
 
-class Login extends Component {
-
-
+//Define a Login Component
+class userLogin extends Component {
+    //call the constructor method
     constructor(props) {
+        //Call the constrictor of Super class i.e The Component
         super(props);
-
+        //maintain the state required for this component
         this.state = {}
-
-        //Bind events
+        //Bind the handlers to this class
         this.usernameChangeHandler = this.usernameChangeHandler.bind(this);
         this.passwordChangeHandler = this.passwordChangeHandler.bind(this);
         this.submitLogin = this.submitLogin.bind(this);
     }
 
+    //username change handler to update state variable with the text entered by the user
     usernameChangeHandler = (e) => {
         this.setState({
             username: e.target.value
         })
     }
-
+    //password change handler to update state variable with the text entered by the user
     passwordChangeHandler = (e) => {
         this.setState({
-            Password: e.target.value
+            password: e.target.value
         })
     }
 
-    submitLogin = (e) => {
-        e.preventDefault();
-
-        if (this.state.username == "" || this.state.Password == "") {
-            this.setState({
-                formValidationFailure: true
-            });
-            console.log('Fill both the fields!');
-
+    handleValidation() {
+        let formIsValid = true;
+        if (!this.state.username || !this.state.password) {
+            formIsValid = false;
+            alert("User name amd password is a Required field");
+            console.log("User name cannot be empty");
         }
-        else {
+        return formIsValid;
+    }
+
+    //submit Login handler to send a request to the node backend
+    submitLogin = (e) => {
+        console.log("Inside submit login");
+        //prevent page from refresh
+        e.preventDefault();
+        if (this.handleValidation()) {
+            console.log("all boxes filled")
             const data = {
                 username: this.state.username,
                 password: this.state.password
             }
-            this.props.login(data.username, data.password);
+            if (data.username && data.password) {
+                console.log("inside this.props.login call")
+                this.props.login(data.username, data.password)
+            }
+
         }
 
     }
-
     render() {
-
-        let formErrorPanel = null;
-        console.log('FormvalidationFailure', this.state.formValidationFailure);
-        if (this.state.formValidationFailure) {
-            formErrorPanel = <div>
-                <div className="alert alert-danger" role="alert">
-                    <strong>Error!</strong> Username and Password are required!
-                </div>
-            </div>
-        }
-        let { isLoginPending, isLoginSuccess, loginError } = this.props;
+        let { isLoginSuccess, loginError } = this.props;
         return (
             <div>
                 <Navbar />
@@ -71,7 +72,6 @@ class Login extends Component {
                             <div className="login-form-heading input-group pad-top-10 input-group-lg">
                                 Enter your credentials:
                             </div>
-                            {formErrorPanel}
                             <div className="form-group">
                                 <input type="username" name="username" id="username" className="form-control" placeholder="username" onChange={this.usernameChangeHandler} required />
                             </div>
@@ -100,6 +100,7 @@ class Login extends Component {
     }
 }
 
+
 const mapStateToProps = (state) => {
     return {
         isLoginSuccess: state.isLoginSuccess,
@@ -113,4 +114,8 @@ const mapDispatchToProps = (dispatch) => {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(userLogin);
+
+
+// //export Login Component
+// export default userLogin;

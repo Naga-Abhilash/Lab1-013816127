@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom'
 import Home from './home/home'
-import OwnerSignup from '../components/Signup/OwnerSignup'
+import OwnerSignup from './Signup/OwnerSignup'
 import Login from './Login/login'
-import UserSignup from '../components/Signup/UserSignup'
+import UserSignup from './Signup/UserSignup'
 import { Provider } from 'react-redux'
-import store from '../store/store'
+import store from './store/store'
 import UpdateProfile from './Update/UpdateProfile' ;
 
 class Main extends Component {
@@ -26,6 +26,7 @@ class Main extends Component {
             </div>
         );
     }
+    
 }
 
 export default Main;
