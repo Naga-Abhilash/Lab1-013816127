@@ -1,28 +1,23 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom'
 import Home from './home/home'
-import OwnerSignup from './Signup/OwnerSignup'
 import Login from './Login/login'
-import UserSignup from './Signup/UserSignup'
-import { Provider } from 'react-redux'
-import store from './store/store'
-import UpdateProfile from './Update/UpdateProfile' ;
+import Signup from './Signup/Signup'
+import Profile from './Update/Profile' ;
 
 class Main extends Component {
 
     render() {
         return (
             <div>
-                <Provider store={store}>
+               
                     <div>
                         <Route exact path="/" component={Home} />
-                        <Route path="/ownersignup" component={OwnerSignup} />
                         <Route path="/login" component={Login} />
                         <Route path="/home" component={Login} />
-                        <Route path="/usersignup" component={UserSignup} />
-                        <Route path="/update-profile" component={UpdateProfile} />
+                        <Route path="/signup" component={Signup} />
+                        <Route path="/profile" component={Profile} />
                     </div>
-                </Provider>
             </div>
         );
     }

@@ -1,96 +1,109 @@
 import React, { Component } from 'react';
-import '../../styles/styles.css';
 import { connect } from 'react-redux';
-import { login } from '../reducers/AllReducers';
-import store from '../store/store';
+import { Redirect } from 'react-router';
+import { reduxForm } from 'redux-form';
+import { submitLogin } from '../../redux/actions/index'
 import Navbar from '../Navbar/Navbar'
 
-//Define a Login Component
-class userLogin extends Component {
-    //call the constructor method
-    constructor(props) {
-        //Call the constrictor of Super class i.e The Component
-        super(props);
-        //maintain the state required for this component
-        this.state = {}
-        //Bind the handlers to this class
-        this.usernameChangeHandler = this.usernameChangeHandler.bind(this);
-        this.passwordChangeHandler = this.passwordChangeHandler.bind(this);
-        this.submitLogin = this.submitLogin.bind(this);
+
+class Login extends Component {
+    constructor() {
+        super();
+        this.state = {
+            Email: '',
+            password: '',
+            formValidationFailure: false,
+            isValidationFailure: true,
+        };
+        this.handleChange = this.handleChange.bind(this);
+
     }
 
-    //username change handler to update state variable with the text entered by the user
-    usernameChangeHandler = (e) => {
+    handleChange = event => {
         this.setState({
-            username: e.target.value
-        })
+            [event.target.id]: event.target.value
+        });
     }
-    //password change handler to update state variable with the text entered by the user
-    passwordChangeHandler = (e) => {
-        this.setState({
-            password: e.target.value
-        })
-    }
-
     handleValidation() {
         let formIsValid = true;
-        if (!this.state.username || !this.state.password) {
+        if (!this.state.Email || !this.state.password) {
             formIsValid = false;
             alert("User name amd password is a Required field");
             console.log("User name cannot be empty");
         }
         return formIsValid;
     }
-
-    //submit Login handler to send a request to the node backend
-    submitLogin = (e) => {
-        console.log("Inside submit login");
-        //prevent page from refresh
-        e.preventDefault();
-        if (this.handleValidation()) {
-            console.log("all boxes filled")
+    onSubmit(values) {
+        //    axios.defaults.withCredentials = true;
+        //if (this.handleValidation()) {
+            console.log("all fields filled")
             const data = {
-                username: this.state.username,
-                password: this.state.password
+                Email: this.state.Email,
+                Password: this.state.password
             }
-            if (data.username && data.password) {
-                console.log("inside this.props.login call")
-                this.props.login(data.username, data.password)
+            console.log(this.state.Email);
+            
+            this.props.submitLogin(data);
+        //}
+    }
+
+    render() {
+        let redirectVar = null;
+        console.log("logininstatestore", this.props.loginStateStore.result)
+        if (this.props.loginStateStore.result) {
+            if (this.props.loginStateStore.result.isAuthenticated === true) {
+                redirectVar = <Redirect to="/profile" />
             }
 
         }
-
-    }
-    render() {
-        let { isLoginSuccess, loginError } = this.props;
+        let errorPanel = null;
+        if (this.props.loginStateStore.result) {
+            if (this.props.loginStateStore.result.isAuthenticated === false) {
+                errorPanel = <div>
+                    <div className="alert alert-danger" role="alert">
+                        <strong>Validation Error!</strong> Email and Password doesn't match!
+                </div>
+                </div>
+            }
+        }
+        let formErrorPanel = null;
+        if (this.state.formValidationFailure) {
+            formErrorPanel = <div>
+                <div className="alert alert-danger" role="alert">
+                    <strong>Validation Error!</strong> Email and Password are required!
+                </div>
+            </div>
+        }
+        const { handleSubmit } = this.props;
         return (
             <div>
-                <Navbar />
-                <form className="form-group ">
+                {/* <Navbar /> */}
+                {redirectVar}
+                <form className="form-group" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
                     <div className="login-container">
+                        
                         <div className="login-form-container col-lg-4 col-md-4 col-sm-12 offset-lg-4 offset-md-4 border">
+                            {errorPanel}
+                            {formErrorPanel}
                             <div className="login-form-heading input-group pad-top-10 input-group-lg">
                                 Enter your credentials:
                             </div>
                             <div className="form-group">
-                                <input type="username" name="username" id="username" className="form-control" placeholder="username" onChange={this.usernameChangeHandler} required />
+                                <input type="Email" name="Email" id="Email" className="form-control" placeholder="Email" onChange={this.handleChange} required />
                             </div>
                             <div className="form-group ">
-                                <input type="password" name="password" id="password" className="form-control" placeholder="Password" onChange={this.passwordChangeHandler} required />
+                                <input type="password" name="password" id="password" className="form-control" placeholder="Password" onChange={this.handleChange} required />
                             </div>
-                            <div className="form-group ">
+                            {/* <div className="form-group ">
                                 <a href="" className="">Forgot Password?</a>
-                            </div>
+                            </div> */}
                             <div>
-                                <button className="btn btn-primary " onClick={this.submitLogin} >Login </button><br />
-                                <p>Need an account? <a href="/usersignup">Sign Up</a></p>
-                                <p>Need an Owner account? <a href="/ownersignup">Owner Sign Up</a></p>
+                                <button className="btn btn-primary" >Login </button><br />
+                                <p>Need an account? <a href="/signup">Sign Up</a></p>
                                 <p><a href="/update-profile">update</a></p>
                             </div>
                             <div className="message">
-                                {isLoginSuccess && <div>Success.</div>}
-                                {loginError && <div>{loginError.message}</div>}
-                                {store.username}
+                                
                             </div>
                         </div>
                     </div>
@@ -101,21 +114,28 @@ class userLogin extends Component {
 }
 
 
-const mapStateToProps = (state) => {
-    return {
-        isLoginSuccess: state.isLoginSuccess,
-        loginError: state.loginError
-    };
+// export default Login;
+
+//This method provides access to redux store
+const mapStateToProps = state => ({
+    loginStateStore: state.login
+});
+
+function validate(values) {
+    const errors = {};
+    if (!values.Email) {
+        errors.Email = "Enter E-mail";
+    }
+    if (!values.password) {
+        errors.password = "Enter Password";
+    }
+    return errors;
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        login: (username, password) => dispatch(login(username, password))
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(userLogin);
+//export default Login;
+export default reduxForm({
+    validate,
+    form: "loginForm"
+})(connect(mapStateToProps, { submitLogin })(Login));
 
 
-// //export Login Component
-// export default userLogin;
