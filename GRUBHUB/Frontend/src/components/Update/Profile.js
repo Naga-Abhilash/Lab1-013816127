@@ -4,7 +4,9 @@ import axios from 'axios';
 import { getProfile } from '../../redux/actions/profileAction' 
 import { connect } from 'react-redux';
 import { updateProfile } from '../../redux/actions/profileAction'
+import {Redirect} from 'react-router-dom'
 
+let redirectvar = null;
 const btn_submit = {
     visibility : 'hidden'
 }
@@ -188,6 +190,12 @@ class Profile extends Component {
         this.props.updateProfile(data
             , (res) => {
                 console.log("update profile", res.data)
+
+                if(res.status == 200){
+                    console.log("status is 200");
+                    this.savechanges()
+                    redirectvar = <Redirect to= "/profile"/>
+                }
         })
     }
 
@@ -203,6 +211,18 @@ class Profile extends Component {
                 document.getElementById('btn-edit').style.visibility="hidden";
                 document.getElementById('btn-submit').style.visibility="visible";
             });
+        }
+    }
+
+    savechanges() {
+        var el = document.getElementById('btn-submit');
+        var frm = document.getElementById('edit-information');
+        if(el){
+            for (var i = 1; i < frm.length-2; i++) {
+                frm.elements[i].disabled = true;
+            }
+            document.getElementById('btn-edit').style.visibility = "visible";
+            document.getElementById('btn-submit').style.visibility = "hidden";
         }
     }
 
@@ -268,7 +288,8 @@ class Profile extends Component {
 
         return (
             <div>
-                {/* <Navbar /> */}
+                <Navbar />
+                {redirectvar}
                 <div className="container fill-graywhite">
                    
                     <div className="container content">
@@ -287,13 +308,15 @@ class Profile extends Component {
                                         <input onChange={this.imageHandler} name="userImage" type="file" id="userImage" placeholder="Upload your image here" disabled accept="image/png, image/jpeg" />
                                     </div>
                                 </div>
-                                <div className="form-group">
-                                    <label>Your Full name:</label>
-                                    <input onChange={this.fullNameHandler} name="userFullName" type="text" className="form-control" id="inputAddress"value= {this.state.userName} disabled />
-                                </div>
-                                <div className="form-group">
-                                    <label>Address</label>
-                                    <input onChange={this.addressHandler} name="userAddress" type="text" className="form-control" id="inputAddress2" value= {this.state.userAdr} disabled />
+                                <div className="form-row">
+                                    <div className="form-group col-md-6">
+                                        <label>Your Full name:</label>
+                                        <input onChange={this.fullNameHandler} name="userFullName" type="text" className="form-control" id="inputAddress"value= {this.state.userName} disabled />
+                                    </div>
+                                    <div className="form-group col-md-6">
+                                        <label>Address</label>
+                                        <input onChange={this.addressHandler} name="userAddress" type="text" className="form-control" id="inputAddress2" value= {this.state.userAdr} disabled />
+                                    </div>
                                 </div>
                                 <div className="form-row">
                                     <div className="form-group col-md-6">

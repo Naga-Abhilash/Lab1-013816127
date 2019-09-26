@@ -6,7 +6,11 @@
   width:auto
 }
 
-
+.centerSearch {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;

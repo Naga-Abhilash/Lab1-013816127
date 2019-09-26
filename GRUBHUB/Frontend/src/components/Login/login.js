@@ -77,7 +77,7 @@ class Login extends Component {
         const { handleSubmit } = this.props;
         return (
             <div>
-                {/* <Navbar /> */}
+                <Navbar />
                 {redirectVar}
                 <form className="form-group" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
                     <div className="login-container">
