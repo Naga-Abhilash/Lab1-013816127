@@ -19,23 +19,16 @@ class Login extends Component {
 
     }
 
-    handleChange = event => {
+    handleChange = e => {
+        e.preventDefault()
         this.setState({
-            [event.target.id]: event.target.value
+            [e.target.id]: e.target.value
         });
     }
-    handleValidation() {
-        let formIsValid = true;
-        if (!this.state.Email || !this.state.password) {
-            formIsValid = false;
-            alert("User name amd password is a Required field");
-            console.log("User name cannot be empty");
-        }
-        return formIsValid;
-    }
+    
     onSubmit(values) {
         //    axios.defaults.withCredentials = true;
-        //if (this.handleValidation()) {
+        
             console.log("all fields filled")
             const data = {
                 Email: this.state.Email,
@@ -44,7 +37,7 @@ class Login extends Component {
             console.log(this.state.Email);
             
             this.props.submitLogin(data);
-        //}
+        
     }
 
     render() {
@@ -52,7 +45,7 @@ class Login extends Component {
         console.log("logininstatestore", this.props.loginStateStore.result)
         if (this.props.loginStateStore.result) {
             if (this.props.loginStateStore.result.isAuthenticated === true) {
-                redirectVar = <Redirect to="/profile" />
+                redirectVar = <Redirect to="/" />
             }
 
         }

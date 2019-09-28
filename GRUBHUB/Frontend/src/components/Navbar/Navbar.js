@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import cookie from 'react-cookies';
 import axios from 'axios';
 import {Link, Redirect} from 'react-router-dom'
+import './navStyles.css'
 
 var redirecter = null;
 class Navbar extends Component {
@@ -12,11 +13,15 @@ class Navbar extends Component {
         //bind
         this.handleLogout = this.handleLogout.bind(this);
     }
-
-    handleLogout = () => {
-        
+    removeSessions = () => {
+        sessionStorage.removeItem('restaurantResults');
+        sessionStorage.removeItem('restItemResults');
+        sessionStorage.removeItem('cuisineResults')
+    }
+    handleLogout = (e) => {
+        //  e.preventDefault();
         localStorage.removeItem("email");
-        redirecter = <Redirect to = "/login"></Redirect>
+        redirecter = <Redirect to = "/login"/>
     }
 
     render() {
@@ -25,31 +30,42 @@ class Navbar extends Component {
         if (localStorage.getItem('email')) {
             console.log("Able to read local storage");
             navLogin = (
-                <ul className="nav navbar-nav navbar-right">
-                    <li><Link to="/login" onClick={this.handleLogout}><span className="glyphicon glyphicon-user"></span>Logout</Link></li>
-                </ul>
+                <div className="collapse navbar-collapse">
+                    <ul className="navbar-nav">
+                        <li className="nav-item active">
+                            <a className="nav-link" href="/">Home </a>
+                        </li>
+                        <li className="nav-item active">
+                            <a className="nav-link" href="/profile">Your Profile </a>
+                        </li>
+                        <li className="nav-item active">
+                            <a className="nav-link" href="#">Past Orders </a>
+                        </li>
+
+                    </ul>
+                    <div className="nav-login-logout">
+                        <ul className="nav ">
+                            <li><Link to="/login" onClick={this.handleLogout}> <strong>Logout</strong></Link></li>
+                        </ul>
+                    </div>
+                </div>
             );
         } else {
             //Else display login button
             console.log("Not Able to read cookie");
-            navLogin = (
-                <ul className="nav navbar-nav navbar-right">
-                    <li><Link to="/login"><span className="glyphicon glyphicon-log-in"></span> Login</Link></li>
-                </ul>
-            )
+            navLogin =null
         }
 
         return (
            
             <div>
-                <nav className="navbar navbar-inverse">
-                    <div className="container-fluid">
-                        <div className="navbar-header">
-                            <Link to="/login" > <h1 className="text-danger"> GRUBHUB</h1></Link>
-                        </div>
-                        {navLogin}
-                    </div>
+                {redirecter}
+                <nav className="navbar navbar-expand-lg navbar-dark bg-danger">
+                    <a className="navbar-brand" href="/" onClick={this.removeSessions}><h2 className = "logo-main font-weight-bold"> GRUBHUB</h2></a>
+                    {navLogin}
                 </nav>
+                
+                        
             </div>
         )
     }

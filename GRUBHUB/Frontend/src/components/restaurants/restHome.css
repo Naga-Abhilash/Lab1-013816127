@@ -1,0 +1,20 @@
+.pad-left{
+    padding-left: 50px;
+}
+
+/* .item-column{
+
+} */
+
+#left {
+    padding-top: 100px;
+    float:left;
+    width: 23%;
+    padding-left: 15px;
+}
+
+#right {
+    padding-top: 100px;
+    float:right;
+    width: 75%;
+}

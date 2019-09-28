@@ -1,0 +1,15 @@
+.nav-login-logout {
+  position: absolute;
+  /* position: fixed; */
+  right: 100px;
+  color: white;
+} 
+
+.navbar-nav{
+    position: absolute;
+  /* position: fixed; */
+  right: 160px;
+}
+.logo-main{
+    color: white;
+}
