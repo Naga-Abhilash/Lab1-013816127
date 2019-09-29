@@ -7,6 +7,7 @@ import './restHome.css'
 import RestCuisines from './restCuisines'
 import './restHome.css'
 
+
 class RestaurantHome extends Component {
     constructor() {
         super()
@@ -38,8 +39,8 @@ class RestaurantHome extends Component {
             itemUniqueTypes: result
         })
     }
-    visitItem =() => {
-
+    addToCart =(itemId) => {
+        
     }
     itemByItemType = (itemName) => {
         //e.preventDefault()
@@ -82,7 +83,7 @@ class RestaurantHome extends Component {
                     <ItemCard
                         key={item.itemId}
                         itemIndividual={item}
-                        visitItem={this.visitItem.bind(this)}
+                        addToCart={this.addToCart.bind(this)}
                     />
                 )
             })

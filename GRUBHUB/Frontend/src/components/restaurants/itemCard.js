@@ -24,7 +24,7 @@ class ItemDisplay extends Component {
                             <div className="card-block" id="card-title-text">
                                 <h4 className="card-title">{itemName}</h4>
                                 <p className="card-text">${itemPrice}.00</p>
-                                <button id="btn-item-add-to-cart" onClick={() => this.props.visitItem(this.props.itemIndividual.itemId)} className="btn btn-success">Add to cart </button>
+                                <button id="btn-item-add-to-cart" onClick={() => this.props.addToCart(this.props.itemIndividual.itemId)} className="btn btn-success">Add to cart </button>
                             </div>
                         </div>
                     </div>

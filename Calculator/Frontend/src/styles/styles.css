@@ -1,0 +1,111 @@
+::after,
+::before {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+html {
+  font-size: 62.5%;
+  font-family: "Open Sans", sans-serif;
+}
+
+:root {
+  --color-white: #fff;
+  --color-tomato: #406f8f;
+  --color-light-black: #222;
+}
+
+.app {
+  height: 100vh;
+  width: 100%;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calculator {
+  height: 80vh;
+  width: 25%;
+  background-color: var(--color-light-black);
+}
+
+.screen {
+  height: 25vh;
+  width: 89%;
+  padding: 0 2rem;
+  overflow: hidden;
+  white-space: no-wrap;
+  background-color: var(--color-tomato);
+}
+
+.Result-Screen {
+  height: 18vh;
+  font-size: 8rem;
+  background-color: var(--color-tomato);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.evaluation-screen {
+  height: 7vh;
+  font-size: 2.5rem;
+  background-color: var(--color-tomato);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.key-row {
+  height: 11vh;
+  font-size: 2.5rem;
+  width: 100%;
+  display: flex;
+  color: white;
+}
+
+.total-keypad {
+  height: 45vh;
+  width: 100%;
+}
+
+.btn {
+  width: 25%;
+  height: 100%;
+  font-size: 3rem;
+  font-family: inherit;
+  border: 1px solid transparent;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+}
+.large-btn {
+  width: 50%;
+  height: 100%;
+  font-size: 3rem;
+  font-family: inherit;
+  border: 1px solid transparent;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+}
+.btn:hover {
+  color: var(--color-light-white);
+  background-color: var(--color-tomato);
+}
+.btn:active {
+  transform: scale(0.95);
+}
+
+.large-btn:hover {
+  color: var(--color-light-white);
+  background-color: var(--color-tomato);
+}
+.large-btn:active {
+  transform: scale(0.95);
+}
