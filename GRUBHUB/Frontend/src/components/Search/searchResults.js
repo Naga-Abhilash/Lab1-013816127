@@ -48,33 +48,32 @@ class searchResults extends Component {
         })
     }
     
-    visitRestaurant = (index) => {
-        const copyResults = Object.assign([], this.state.restSearchResults);
+    visitRestaurant = (restId) => {
         console.log("in VisitRestaurant method");
-        console.log(index) 
+        console.log(restId) 
 
-        // const data = {
-        //     restId: copyResults[index].restId
-        // }
-        // axios.post(rootUrl + '/itemsByRestaurant', data)
-        //     .then(response => {
-        //         console.log(response)
-        //         if (response.status === 200) {
-        //             let itemDetails = JSON.stringify(response.data)
-        //             console.log(response.data);
+        const data = {
+            restId: restId
+        }
+        axios.post(rootUrl + '/itemsByRestaurant', data)
+            .then(response => {
+                console.log(response)
+                if (response.status === 200) {
+                    let itemDetails = JSON.stringify(response.data)
+                    console.log(response.data);
 
-        //             sessionStorage.setItem('restItemResults', itemDetails)
-        //             console.log("itemDetails:" + typeof itemDetails)
-        //         }
-        //         else {
-        //             console.log("Didn't fetch items data")
-        //         }
-        //     })
+                    sessionStorage.setItem('itemsByRestaurant', itemDetails)
+                    console.log("itemDetails:" + typeof itemDetails)
+                    this.props.history.push('/resthome')
+                }
+                else {
+                    console.log("Didn't fetch items data")
+                }
+            })
 
     }
     visitCuisine = (cuisineName) => {
         //e.preventDefault()
-        const copyResults = Object.assign([], this.state.restSearchResults);
         console.log("in VisitCuisine method");
         console.log(cuisineName);
         
@@ -95,6 +94,7 @@ class searchResults extends Component {
                     sessionStorage.setItem('restCuisineDetails', restCuisineDetails)
                     console.log("itemDetails:" + restCuisineDetails)
                     window.location.reload();
+                    // this.props.history.push('/searchresults')
                 }
                 else {
                     console.log("Didn't fetch items data")
@@ -129,12 +129,6 @@ class searchResults extends Component {
     // }
     render() {
         
-        if (sessionStorage.getItem("restCuisineDetails")){
-            redirectVar = <Redirect to="/searchresults"/>
-            console.log("inside redirect var");
-            console.log(this.state);
-            
-        }
         let route = null
         if (this.state.restCuisineResults){
             route = this.state.restCuisineResults;

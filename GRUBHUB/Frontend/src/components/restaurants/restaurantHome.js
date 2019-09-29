@@ -1,61 +1,130 @@
 import React, { Component } from 'react';
 import { rootUrl } from '../../components/config/settings';
 import { Redirect } from 'react-router-dom'
-import ItemDisplay from './ItemDisplay'
+import ItemCard from './itemCard'
 import Navbar from '../Navbar/Navbar'
+import './restHome.css'
+import RestCuisines from './restCuisines'
 import './restHome.css'
 
 class RestaurantHome extends Component {
     constructor() {
         super()
         this.state = {
-            restItemDetails: ""
+            itemsByRestaurant: "",
+            itemsByrestCuisine: "",
+            itemUniqueTypes: ""
         }
     }
+    componentDidMount() {
+        let itemsByRestaurant = sessionStorage.getItem("itemsByRestaurant")
+        let sessionItemDetails = JSON.parse(itemsByRestaurant);
+        let lookup = {};
+        let items = sessionItemDetails;
+        let result = [];
 
-    visitItem = () => {
+        for (let item, i = 0; item = items[i++];) {
+            let itemtype = item.itemType;
+
+            if (!(itemtype in lookup)) {
+                lookup[itemtype] = 1;
+                result.push(itemtype);
+            }
+        }
+        result.sort();
+        console.log(result)
+        this.setState({
+            itemsByRestaurant: sessionItemDetails,
+            itemUniqueTypes: result
+        })
+    }
+    visitItem =() => {
 
     }
+    itemByItemType = (itemName) => {
+        //e.preventDefault()
+        console.log("in itemByItemType method");
+        console.log(itemName)
+        const data = {
+            itemName : itemName,
+            restId: this.state.itemsByRestaurant[0].restId
+        }
+
+        // axios.post(rootUrl + '/restaurantsbyItemCuisine', data)
+        //     .then(response => {
+        //         console.log(response)
+        //         if (response.status === 200) {
+        //             let restCuisineDetails = JSON.stringify(response.data)
+        //             console.log(response.data);
+
+        //             sessionStorage.setItem('restCuisineDetails', restCuisineDetails)
+        //             console.log("itemDetails:" + restCuisineDetails)
+        //             window.location.reload();
+        //             // this.props.history.push('/searchresults')
+        //         }
+        //         else {
+        //             console.log("Didn't fetch items data")
+        //         }
+        //     })
+    }
+
+   
     render() {
         let redirectVar = null;
         let itemDetails = null;
-        if (!sessionStorage.getItem('restItemResults')) {
-            redirectVar = <Redirect to="/" />
+        if (!this.state.itemsByRestaurant) {
+            redirectVar = <Redirect to="/searchresults" />
         }
-        else {
-            let restItemResults = sessionStorage.getItem("restItemResults")
-            let sessionItemDetails = JSON.parse(restItemResults);
-            this.state.restItemDetails = sessionItemDetails;
-        }
-        if (this.state.restItemDetails) {
-            itemDetails = this.state.restItemDetails.map((item, index) => {
+
+        if (this.state.itemsByRestaurant) {
+            itemDetails = this.state.itemsByRestaurant.map((item, index) => {
                 return (
-                    <ItemDisplay
+                    <ItemCard
                         key={item.itemId}
                         itemIndividual={item}
-                        visitItem={this.visitItem.bind(this, index)}
+                        visitItem={this.visitItem.bind(this)}
                     />
                 )
             })
-        }
-        return (
-            <div>
-                {redirectVar}
-                <Navbar />
+            let itemPanel = this.state.itemUniqueTypes.map((itemtype, ind) => {
+                return (
+                    <RestCuisines
+                        //key={cuisine.cuisineId}
+                        itemTypeIndividual={itemtype}
+                        itemByItemType={this.itemByItemType.bind(this)}
+                    />
+                )
+            })
+            return (
                 <div>
-                    <div className="container">
-                        <div className="row justify-content-start">
-                            <div className="col">
-                                <div className= " pad-left">
-                                    {itemDetails}
-                                </div>
+                    {redirectVar}
+                    <Navbar />
+                    <div>
+                        <div className="restLeft" id="left">
+                            <div className="list-group">
+                                {itemPanel}
+                            </div>
+                        </div>
+                        <div id="right">
+                            {/* <div id="search-results-text"><p>Your Search Results....</p></div> */}
+                            <div className="card-group" >
+                                {itemDetails}
                             </div>
                         </div>
                     </div>
-                </div>
 
-            </div>
-        );
+                </div>
+            );
+        }
+        else {
+            return (
+                <div>
+                    <Navbar />
+                    <h3>No Items found. </h3>
+                </div>
+            );
+        }
+
     }
 }
 

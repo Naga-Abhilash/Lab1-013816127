@@ -60,6 +60,7 @@ class Home extends Component {
                     if (Object.keys(response.data).length>0){
                         sessionStorage.setItem("restaurantResults", restDetails)
                         sessionStorage.setItem("itemName",data.itemName);
+                        this.props.history.push('/searchresults')
                     }
                     console.log("response is 200. data received")
                 }
@@ -80,11 +81,11 @@ class Home extends Component {
         if (!localStorage.getItem('email')) {
             redirectVar = <Redirect to='/login' />
         }
-        if(sessionStorage.getItem('restaurantResults')){
-            console.log("get item rest");
+        // if(sessionStorage.getItem('restaurantResults')){
+        //     console.log("get item rest");
             
-            redirectVar = <Redirect to='/searchresults' />
-        }
+        //     redirectVar = <Redirect to='/searchresults' />
+        // }
         
         return (
             <div >

@@ -11,7 +11,7 @@ class restCard extends Component {
     }
    
     render() {
-        let {restId, restName, restImage, restDesc } = this.props.restIndividual;
+        let {restName, restImage, restDesc } = this.props.restIndividual;
         if (restImage === ""){
             restImage = "biryani.jpg"
         }
@@ -27,7 +27,7 @@ class restCard extends Component {
                             <div className="card-block" id = "card-title-text">
                                 <h4 className="card-title">{ restName}</h4>
                                 <p className="card-text">{restDesc} </p>
-                                <button id="btn-rest-visit" onClick={() => this.props.visitRest(restId)} className="btn btn-primary">Visit </button>
+                                <button id="btn-rest-visit" onClick={() => this.props.visitRest(this.props.restIndividual.restId)} className="btn btn-primary">Visit Restaurant</button>
                             </div>
                         </div>
                     </div>

@@ -13,11 +13,7 @@ class Navbar extends Component {
         //bind
         this.handleLogout = this.handleLogout.bind(this);
     }
-    removeSessions = () => {
-        sessionStorage.removeItem('restaurantResults');
-        sessionStorage.removeItem('restItemResults');
-        sessionStorage.removeItem('cuisineResults')
-    }
+    
     handleLogout = (e) => {
         //  e.preventDefault();
         localStorage.removeItem("email");
@@ -41,6 +37,9 @@ class Navbar extends Component {
                         <li className="nav-item active">
                             <a className="nav-link" href="#">Past Orders </a>
                         </li>
+                        <li className="nav-item active">
+                            <a className="nav-link" href="#">Cart<span class="badge badge-danger">9</span> </a>
+                        </li>
 
                     </ul>
                     <div className="nav-login-logout">
@@ -61,7 +60,7 @@ class Navbar extends Component {
             <div>
                 {redirecter}
                 <nav className="navbar navbar-expand-lg navbar-dark bg-danger">
-                    <a className="navbar-brand" href="/" onClick={this.removeSessions}><h2 className = "logo-main font-weight-bold"> GRUBHUB</h2></a>
+                    <a className="navbar-brand" href="/" ><h2 className = "logo-main font-weight-bold"> GRUBHUB</h2></a>
                     {navLogin}
                 </nav>
                 

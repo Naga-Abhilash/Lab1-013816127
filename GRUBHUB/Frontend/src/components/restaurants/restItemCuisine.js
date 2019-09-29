@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { rootUrl } from '../../components/config/settings';
 import { Redirect } from 'react-router-dom'
-import ItemDisplay from './ItemDisplay'
+import ItemDisplay from './itemCard'
 import Navbar from '../Navbar/Navbar'
 import './restHome.css'
 

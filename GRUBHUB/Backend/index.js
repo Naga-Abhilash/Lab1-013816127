@@ -442,6 +442,46 @@ app.get('/allrestaurants', (req, res) => {
     }
 });
 
+//Get items by restaurant
+app.post('/itemsByRestaurant', (req, res) => {
+    console.log("In itemsByRestaurant");
+    console.log(req.body.restId);
+
+    // if (req.session.userEmail) {
+        pool.getConnection((err, conn) => {
+            if (err) {
+                console.log("Error while connecting to database");
+                res.writeHead(500, {
+                    'Content-type': 'text/plain'
+                });
+                res.end("Error while connecting to database");
+            } else {
+                //query
+                const sql = `SELECT i.*, r.* FROM items i, restaurants r
+                            WHERE r.restId = i.restId AND r.restId = ${mysql.escape(req.body.restId)};`;
+                console.log(sql);
+                conn.query(sql, (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        res.writeHead(400, {
+                            'Content-type': 'text/plain'
+                        });
+                        res.end("Couldnt get cuisine names");
+                    } else {
+                        console.log(result);
+                        res.writeHead(200, {
+                            'Content-type': 'text/plain'
+                        });
+                        res.end(JSON.stringify(result));
+                    }
+                });
+
+            }
+
+        });
+    // }
+})
+
 
 app.listen(3001, () => {
     console.log('server is running on port 3001');
