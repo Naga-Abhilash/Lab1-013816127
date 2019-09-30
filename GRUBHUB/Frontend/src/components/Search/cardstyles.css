@@ -73,10 +73,11 @@ a {
     -moz-box-sizing:border-box;
 }
 #left {
-    padding-top: 100px;
+    padding-top: 110px;
     float:left;
     width: 23%;
     padding-left: 15px;
+    text-align: center;
 }
 
 #right {

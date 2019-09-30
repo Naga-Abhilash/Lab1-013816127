@@ -38,7 +38,7 @@ class Navbar extends Component {
                             <a className="nav-link" href="#">Past Orders </a>
                         </li>
                         <li className="nav-item active">
-                            <a className="nav-link" href="#">Cart<span class="badge badge-danger">9</span> </a>
+                            <a className="nav-link" href="#">Cart<span className="badge badge-danger">9</span> </a>
                         </li>
 
                     </ul>

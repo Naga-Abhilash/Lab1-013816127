@@ -9,7 +9,8 @@
 }
 
 .centerit{
+    display: flex;
+    justify-content: center;
     padding-top: 250px;
-    padding-left: 400px;
 }
 
