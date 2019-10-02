@@ -3,6 +3,7 @@ import { rootUrl } from '../../components/config/settings';
 import { Redirect } from 'react-router-dom'
 import ItemCard from './itemCard'
 import Navbar from '../Navbar/Navbar'
+import axios from 'axios'
 import './restHome.css'
 import RestCuisines from './restCuisines'
 import swal from 'sweetalert';
@@ -16,11 +17,11 @@ class RestaurantHome extends Component {
             itemsByRestaurant: "",
             itemsByrestCuisine: "",
             itemUniqueTypes: "",
-            itemQuantity : ""
+            itemQuantity: ""
         }
     }
     componentDidMount() {
-        
+
         let itemsByRestaurant = sessionStorage.getItem("itemsByRestaurant")
         let sessionItemDetails = JSON.parse(itemsByRestaurant);
         let lookup = {};
@@ -39,82 +40,150 @@ class RestaurantHome extends Component {
 
         result.sort();
         console.log(result)
+        let parseQuantity = '{"Quantity":[]}'
         for (let item, i = 0; item = items[i++];) {
-            // let itemName = {item.itemName: 0};
-            // this.setState({
-            //     itemQuantity: 0
-            // })
+            let itemNameQ = item.itemName;
+
+            parseQuantity = JSON.parse(parseQuantity)
+            parseQuantity.Quantity.push({ "itemName": itemNameQ, "itemQuantity": 0 })
+            parseQuantity = JSON.stringify(parseQuantity)
         }
+        console.log(typeof parseQuantity);
         this.setState({
             itemsByRestaurant: sessionItemDetails,
-            itemUniqueTypes: result
+            itemUniqueTypes: result,
+            itemQuantity: parseQuantity
         })
     }
 
-    itemByItemType = (itemName) => {
+    itemByItemType = (itemType) => {
         //e.preventDefault()
         console.log("in itemByItemType method");
-        console.log(itemName)
+        console.log(itemType)
+        
+        let itemsByRest = this.state.itemsByRestaurant;
+        let itemsType = '{"requiredType":[]}'
+        for (let i = 0; i< itemsByRest.length;i++) {
+            let itemNameQ = itemsByRest[i];
+            
+            itemsType = JSON.parse(itemsType)
+            
+            if (itemNameQ.itemType === itemType){
+                itemsType.requiredType.push(itemNameQ)
+            }
+            itemsType = JSON.stringify(itemsType)
+        }
+        // itemsType = JSON.parse(itemsType);
+        console.log(typeof itemsType);
+        
+
+        sessionStorage.setItem('itemSections', itemsType)
+        
+        this.setState({
+            itemsByrestCuisine: itemsType
+        })
+
+    }
+
+    togglePopup = (itemPrice, itemId, restId, itemQuantity) => {
+        console.log("in togglePopup with Id: ");
+        console.log(itemQuantity)
+        let itemTotal = itemPrice * itemQuantity;
         const data = {
-            itemName: itemName,
-            restId: this.state.itemsByRestaurant[0].restId
+            itemId: itemId,
+            restId: restId,
+            itemQuantity: itemQuantity,
+            itemTotal: itemTotal
+        }
+        console.log(data);
+        if(itemQuantity > 0 ){
+            axios.post(rootUrl + '/addToCart', data)
+                .then(response => {
+                    console.log(response)
+                    if (response.status === 200) {
+                        
+                        swal("Success!", "Item Added to cart!", "success");
+                    }
+                    else {
+                        console.log("Didn't fetch items data")
+                    }
+                })
+        }
+        else{
+            alert("Quantity should me more than 0");
         }
 
-        // axios.post(rootUrl + '/restaurantsbyItemCuisine', data)
-        //     .then(response => {
-        //         console.log(response)
-        //         if (response.status === 200) {
-        //             let restCuisineDetails = JSON.stringify(response.data)
-        //             console.log(response.data);
-
-        //             sessionStorage.setItem('restCuisineDetails', restCuisineDetails)
-        //             console.log("itemDetails:" + restCuisineDetails)
-        //             window.location.reload();
-        //             // this.props.history.push('/searchresults')
-        //         }
-        //         else {
-        //             console.log("Didn't fetch items data")
-        //         }
-        //     })
     }
 
-    togglePopup = (id) => {
-        console.log("in togglePopup with Id: " + this.state.showPopup);
-        console.log(id)
-        // document.getElementById(docid).addEventListener("click", function () {
-        //     document.querySelector('.bg-modal').style.display = "flex";
-        // });
 
-        // document.querySelector('.close').addEventListener("click", function () {
-        //     document.querySelector('.bg-modal').style.display = "none";
-        // });
+    handleIncrement = (itemName) => {
+        let indItemQuantity = JSON.parse(this.state.itemQuantity)
+        for (let i = 0; i < indItemQuantity.Quantity.length; i++) {
+            if (indItemQuantity.Quantity[i].itemName == itemName) {
+                indItemQuantity.Quantity[i].itemQuantity += 1;
 
-        // this.setState({
-        //     showPopup: !this.state.showPopup
-        // });
+            }
+        }
+        let stringitemQuant = JSON.stringify(indItemQuantity);
+        this.setState({
+            itemQuantity: stringitemQuant
+        })
+        console.log(this.state.itemQuantity)
+
     }
-    handleItemQuantity = () =>{
-        console.log("handle quantity");
-        
+
+
+    handleDecrement = (itemName) => {
+        let indItemQuantity = JSON.parse(this.state.itemQuantity)
+        for (let i = 0; i < indItemQuantity.Quantity.length; i++) {
+            if (indItemQuantity.Quantity[i].itemName == itemName) {
+                if (indItemQuantity.Quantity[i].itemQuantity > 0)
+                    indItemQuantity.Quantity[i].itemQuantity -= 1;
+            }
+        }
+        let stringitemQuant = JSON.stringify(indItemQuantity);
+        this.setState({
+            itemQuantity: stringitemQuant
+        })
+        console.log(this.state.itemQuantity)
     }
+
 
     render() {
         let redirectVar = null;
         let itemDetails = null;
+
         if (!this.state.itemsByRestaurant) {
             redirectVar = <Redirect to="/searchresults" />
         }
-
-        if (this.state.itemsByRestaurant) {
-            itemDetails = this.state.itemsByRestaurant.map((item, index) => {
+        let i = -1;
+        let route = null;
+        if(this.state.itemsByrestCuisine){
+            route = JSON.parse(this.state.itemsByrestCuisine);
+            route = route.requiredType
+            sessionStorage.removeItem('itemSections')
+        }
+        else if(this.state.itemsByRestaurant){
+            route = this.state.itemsByRestaurant
+        }
+        console.log(route);
+        
+        if (route) {
+            itemDetails = route.map((item, index) => {
+                let quant = JSON.parse(this.state.itemQuantity)
+                
+                i = i + 1
                 return (
                     <ItemCard
                         key={item.itemId}
                         itemIndividual={item}
-                        handleItemQuantity = {this.handleItemQuantity.bind(this)}
+                        quantity={quant}
+                        handleDecrement={this.handleDecrement.bind(this)}
+                        handleIncrement={this.handleIncrement.bind(this)}
                         togglePopup={this.togglePopup.bind(this)}
                     />
                 )
+
             })
             let itemPanel = this.state.itemUniqueTypes.map((itemtype, ind) => {
                 return (
@@ -133,7 +202,6 @@ class RestaurantHome extends Component {
             let resimg = new Image();
             resimg = unknown;
 
-            
 
             return (
                 <div>
@@ -161,20 +229,6 @@ class RestaurantHome extends Component {
                             </div>
                         </div>
                     </div>
-                        < div className="bg-modal" >
-                            <div className="modal-contents">
-
-                                <div className="close">+</div>
-                                {/* <img src="https://richardmiddleton.me/comic-100.png" alt=""/> */}
-
-                                <form action="">
-                                    <input type="text" placeholder="Name" />
-                                    <input type="email" placeholder="E-Mail" />
-                                    <a href="#" className="btn btn-primary">Submit</a>
-                                </form>
-
-                            </div>
-                        </div>
                 </div>
             );
         }

@@ -17,13 +17,13 @@ class Navbar extends Component {
     handleLogout = (e) => {
         //  e.preventDefault();
         localStorage.removeItem("email");
-        redirecter = <Redirect to = "/login"/>
+        // redirecter = <Redirect to = "/login"/>
     }
 
     render() {
         
         let navLogin = null;
-        if (localStorage.getItem('email')) {
+        if (cookie.load('cookie')) {
             console.log("Able to read local storage");
             navLogin = (
                 <div className="collapse navbar-collapse">
@@ -38,7 +38,7 @@ class Navbar extends Component {
                             <a className="nav-link" href="#">Past Orders </a>
                         </li>
                         <li className="nav-item active">
-                            <a className="nav-link" href="#">Cart<span className="badge badge-danger">9</span> </a>
+                            <a className="nav-link" href="/cart">Cart<span className="badge badge-danger">9</span> </a>
                         </li>
 
                     </ul>
@@ -63,8 +63,6 @@ class Navbar extends Component {
                     <a className="navbar-brand" href="/" ><h2 className = "logo-main font-weight-bold"> GRUBHUB</h2></a>
                     {navLogin}
                 </nav>
-                
-                        
             </div>
         )
     }

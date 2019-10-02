@@ -1,134 +1,163 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { Link } from "react-router-dom";
+// import logo from '../../images/login-page-burger.png'
+import axios from 'axios';
+import cookie from 'react-cookies';
 import { Redirect } from 'react-router';
-import { reduxForm } from 'redux-form';
-import { submitLogin } from '../../redux/actions/index'
-import Navbar from '../Navbar/Navbar'
 
+const LoginSchema = Yup.object().shape({
+    email: Yup.string()
+        .email("Invalid email address format")
+        .required("Email is required"),
+    password: Yup.string()
+        .required("Password is required")
+});
 
-class Login extends Component {
-    constructor() {
-        super();
+class LoginForm extends Component {
+    constructor(props) {
+        super(props);
         this.state = {
-            Email: '',
+            email: '',
             password: '',
-            formValidationFailure: false,
-            isValidationFailure: true,
+            authFlag: 'false'
         };
-        this.handleChange = this.handleChange.bind(this);
 
+        this.submitLogin = this.submitLogin.bind(this);
     }
 
-    handleChange = e => {
-        e.preventDefault()
-        this.setState({
-            [e.target.id]: e.target.value
-        });
+    submitLogin = (details) => {
+        console.log("Inside submit login", details);
+        const data = {
+            userEmail: details.email,
+            userPassword: details.password
+        }
+        //set the with credentials to true
+        axios.defaults.withCredentials = true;
+        //make a post request with the user data
+        axios.post('http://localhost:3001/login', data)
+            .then(response => {
+                console.log("inside success")
+                console.log("Status Code : ", response.status);
+                if (response.status === 200) {
+                    console.log("response", response.data)
+                    localStorage.setItem("accountType", response.data)
+                    this.setState({
+                        authFlag: true
+                    })
+                    // alert("success")
+                    // console.log(response)
+                }
+                console.log(this.state.authFlag)
+            })
+            .catch(error => {
+                console.log("In error");
+                this.setState({
+                    authFlag: "false"
+                });
+                console.log(error);
+                alert("User credentials not valid. Please try again!");
+            })
     }
-    
-    onSubmit(values) {
-        //    axios.defaults.withCredentials = true;
-        
-            console.log("all fields filled")
-            const data = {
-                Email: this.state.Email,
-                Password: this.state.password
-            }
-            console.log(this.state.Email);
-            
-            this.props.submitLogin(data);
-        
-    }
+
 
     render() {
+        // console.log("test cookie",cookie.load('username-localhost-8888'))
         let redirectVar = null;
-        console.log("logininstatestore", this.props.loginStateStore.result)
-        if (this.props.loginStateStore.result) {
-            if (this.props.loginStateStore.result.isAuthenticated === true) {
+        if (cookie.load('cookie')) {
+            // if(this.state.authFlag===true){
+
+            // if (localStorage.getItem("accountType") === "2") {
+            //     redirectVar = <Redirect to="/ownerhome" />
+            // }
+            if (localStorage.getItem("accountType") === "1") {
                 redirectVar = <Redirect to="/" />
             }
-
         }
-        let errorPanel = null;
-        if (this.props.loginStateStore.result) {
-            if (this.props.loginStateStore.result.isAuthenticated === false) {
-                errorPanel = <div>
-                    <div className="alert alert-danger" role="alert">
-                        <strong>Validation Error!</strong> Email and Password doesn't match!
-                </div>
-                </div>
-            }
-        }
-        let formErrorPanel = null;
-        if (this.state.formValidationFailure) {
-            formErrorPanel = <div>
-                <div className="alert alert-danger" role="alert">
-                    <strong>Validation Error!</strong> Email and Password are required!
-                </div>
-            </div>
-        }
-        const { handleSubmit } = this.props;
         return (
-            <div>
-                <Navbar />
+            <div className="container-fluid">
                 {redirectVar}
-                <form className="form-group" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                    <div className="login-container">
-                        
-                        <div className="login-form-container col-lg-4 col-md-4 col-sm-12 offset-lg-4 offset-md-4 border">
-                            {errorPanel}
-                            {formErrorPanel}
-                            <div className="login-form-heading input-group pad-top-10 input-group-lg">
-                                Enter your credentials:
-                            </div>
-                            <div className="form-group">
-                                <input type="Email" name="Email" id="Email" className="form-control" placeholder="Email" onChange={this.handleChange} required />
-                            </div>
-                            <div className="form-group ">
-                                <input type="password" name="password" id="password" className="form-control" placeholder="Password" onChange={this.handleChange} required />
-                            </div>
-                            {/* <div className="form-group ">
-                                <a href="" className="">Forgot Password?</a>
-                            </div> */}
-                            <div>
-                                <button className="btn btn-primary" >Login </button><br />
-                                <p>Need an account? <a href="/signup">Sign Up</a></p>
-                                <p><a href="/update-profile">update</a></p>
-                            </div>
-                            <div className="message">
-                                
+                <div className="row align-items-center h-100 ">
+                    <div className="col-md-6-fluid">
+                        <img  alt="" className="img-responsive fit-image" />
+                    </div>
+                    <div className="col-md-4 mx-auto">
+                        <div className="card shadow p-3 mb-5 rounded">
+                            <div className="card-body text-left" >
+                                <h4 className="text-black text-left font-weight-bold">Sign in with your Grubhub <br />account</h4>
+                                <br />
+                                <Formik
+                                    initialValues={this.state}
+                                    validationSchema={LoginSchema}
+                                    onSubmit={(values, actions) => {
+                                        this.submitLogin(values)
+                                        actions.setSubmitting(false);
+                                    }}
+                                >
+                                    {({ touched, errors, isSubmitting }) => (
+                                        <Form>
+                                            <div className="form-group text-left">
+                                                <label htmlFor="email">Email</label>
+                                                <Field
+                                                    type="email"
+                                                    name="email"
+                                                    // autofocus="true"
+                                                    className={`form-control ${
+                                                        touched.email && errors.email ? "is-invalid" : ""
+                                                        }`}
+                                                />
+                                                <ErrorMessage
+                                                    component="div"
+                                                    name="email"
+                                                    align="text-left"
+                                                    className="invalid-feedback"
+                                                />
+                                            </div>
+
+                                            <div className="form-group text-left">
+                                                <label htmlFor="password">Password</label>
+                                                <Field
+                                                    type="password"
+                                                    name="password"
+                                                    className={`form-control ${
+                                                        touched.password && errors.password ? "is-invalid" : ""
+                                                        }`}
+                                                />
+                                                <ErrorMessage
+                                                    component="div"
+                                                    name="password"
+                                                    className="invalid-feedback"
+                                                />
+                                            </div>
+                                            <br />
+                                            <button
+                                                type="submit"
+                                                id="signin"
+                                                className="btn btn-primary"
+                                            // disabled={!isSubmitting}
+                                            >
+                                                {/* {isSubmitting ? "Please wait..." : "Sign in"} */}
+                                                Sign in
+                                                </button>
+                                        </Form>
+                                    )}
+                                </Formik>
+
+                                <br />
+                                Don't have an account?&nbsp;&nbsp;<Link to="/customersignup">Create your customer account!</Link>
+                                <br />
+                                Want to partner with us?&nbsp;<Link to="/ownersignup">Create your owner account!</Link>
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
-        )
+        );
     }
 }
 
 
-// export default Login;
-
-//This method provides access to redux store
-const mapStateToProps = state => ({
-    loginStateStore: state.login
-});
-
-function validate(values) {
-    const errors = {};
-    if (!values.Email) {
-        errors.Email = "Enter E-mail";
-    }
-    if (!values.password) {
-        errors.password = "Enter Password";
-    }
-    return errors;
-}
-
-//export default Login;
-export default reduxForm({
-    validate,
-    form: "loginForm"
-})(connect(mapStateToProps, { submitLogin })(Login));
+export default LoginForm;
 
 

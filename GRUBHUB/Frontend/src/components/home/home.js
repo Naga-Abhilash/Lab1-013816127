@@ -77,10 +77,10 @@ class Home extends Component {
         //     console.log(k)
         // }
         
-        let redirectVar = null
-        if (!localStorage.getItem('email')) {
-            redirectVar = <Redirect to='/login' />
-        }
+        // let redirectVar = null
+        // if (!localStorage.getItem('email')) {
+        //     redirectVar = <Redirect to='/login' />
+        // }
         // if(sessionStorage.getItem('restaurantResults')){
         //     console.log("get item rest");
             
@@ -89,7 +89,7 @@ class Home extends Component {
         
         return (
             <div >
-                {redirectVar}
+                {/* {redirectVar} */}
                 
                 <Navbar />
                 <div style={ sectionStyle } >

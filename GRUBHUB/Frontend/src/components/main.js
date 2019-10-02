@@ -8,6 +8,7 @@ import restCard from './Search/restCards';
 import searchResults from './Search/searchResults'
 import Testcss from './Search/testcss'
 import RestaurantHome from './restaurants/restaurantHome'
+import Cart from './cart/cart'
 
 class Main extends Component {
 
@@ -24,6 +25,7 @@ class Main extends Component {
                     <Route path="/searchresults" component={searchResults}/>
                     <Route path="/testcss" component={Testcss} />
                     <Route path="/resthome" component={RestaurantHome} />
+                    <Route path = "/cart" component = {Cart}/>
                 </div>
             </div>
         );
