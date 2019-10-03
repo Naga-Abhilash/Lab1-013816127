@@ -14,15 +14,15 @@ app.use(cookieParser());
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 // setup session variable
+
+
 app.use(session({
     secret: 'grubhub_app',
     resave: false,
-    saveUninitialized: false,
-    cookie: {maxAge: 24*60*60*1000},
+    saveUninitialized: true,
     duration: 60 * 60 * 100,
     activeDuration: 5 * 60 * 100
 }));
-
 //Allow access control headers
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -251,14 +251,14 @@ app.post('/login', (req, res) => {
                     } else {
                         console.log(result);
                         res.cookie('cookie', result[0].userEmail, {
-                            maxAge: 900000,
+                            maxAge: 360000,
                             httpOnly: false,
                             path: '/'
                         });
                         // console.log("res.cookie",res.cookie);
 
                         req.session.userEmail = result[0].userEmail;
-                        console.log("Session data" + req.session.userEmail);
+                        console.log("Session data: " + req.session.userEmail);
                         res.writeHead(200, {
                             'Content-type': 'text/plain'
                         });
@@ -276,10 +276,10 @@ app.post('/login', (req, res) => {
 //restaurentsbyItemName
 app.post('/restaurantsbyItemName', (req, res) => {
     console.log("In restaurantsbyItemName");
-    //console.log(req.body);
+    console.log(req.body);
     console.log(req.session);
-
-    // if (req.session.userEmail) {
+    
+    if (req.session.userEmail) {
     pool.getConnection((err, conn) => {
         if (err) {
             console.log("Error while connecting to database");
@@ -317,7 +317,7 @@ app.post('/restaurantsbyItemName', (req, res) => {
             });
         }
     });
-    // }
+    }
 });
 
 //AllCuisines
@@ -365,8 +365,11 @@ app.get('/getCuisines', (req, res) => {
 app.post('/restaurantsbyItemCuisine', (req, res) => {
     console.log("restaurantsbyItemCuisine");
     console.log(req.body);
-
-    // if (req.session.user) {
+    console.log(req.session);
+    
+    if (req.session.userEmail) {
+        
+        
     pool.getConnection((err, conn) => {
         if (err) {
             console.log("Error while connecting to database");
@@ -407,7 +410,7 @@ app.post('/restaurantsbyItemCuisine', (req, res) => {
             });
         }
     });
-    // }
+    }
 });
 
 app.get('/allrestaurants', (req, res) => {
@@ -454,8 +457,9 @@ app.get('/allrestaurants', (req, res) => {
 app.post('/itemsByRestaurant', (req, res) => {
     console.log("In itemsByRestaurant");
     console.log(req.body.restId);
-
-    // if (req.session.userEmail) {
+    console.log(req.session.userEmail);
+    
+    if (req.session.userEmail) {
     pool.getConnection((err, conn) => {
         if (err) {
             console.log("Error while connecting to database");
@@ -487,7 +491,7 @@ app.post('/itemsByRestaurant', (req, res) => {
         }
 
     });
-    // }
+    }
 })
 
 
@@ -614,7 +618,7 @@ app.post('/addToCart', (req, res) => {
                                                                 conn.query(sql6, (err, result) => {
                                                                     if (err) {
                                                                         console.log(err);
-                                                                        req.session.save();
+                                                                        // req.session.save();
                                                                         res.status(500).end("Error connecting to cart table");
                                                                     } else {
                                                                         console.log("Successfully updated cart");
@@ -699,6 +703,7 @@ app.post('/orderItems', (req, res) => {
                         max = result[0].max;
 
                         const sql1 = `SELECT * FROM cart WHERE userEmail= ${mysql.escape(req.session.userEmail)}`;
+
                         console.log(sql1);
                         conn.query(sql1, (err, result) => {
                             if (err) {
@@ -718,28 +723,81 @@ app.post('/orderItems', (req, res) => {
                                             res.status(400).end("Please try again to order items");
                                         } else {
                                             console.log(result);
-                                            res.end("Order placed");
+                                            const sql2 = `DELETE FROM cart WHERE userEmail=${req.session.userEmail}`;
+                                            console.log(sql2);
+                                            conn.query(sql2, (err, result) => {
+                                                if (err) {
+                                                    console.log(err);
+                                                    res.status(400).end("Please try again to order items");
+                                                } else {
+                                                    res.status(200).end("Order placed");
+                                                }
+                                            });
                                         }
                                     });
                                 }
                             }
                         });
-
                     }
                 });
             }
         });
     }
+});
+
+
+const cartitems = [{ "userEmail": "user8@gmail.com", "itemId": 7, "restId": 2, "itemName": "Brunch Torte", "itemPrice": 10, "itemImage": "", "itemQuantity": 1, "itemTotal": 10 }, { "userEmail": "user8@gmail.com", "itemId": 8, "restId": 2, "itemName": "Baked Eggs and Sausage", "itemPrice": 12, "itemImage": "", "itemQuantity": 2, "itemTotal": 24 }, { "userEmail": "user8@gmail.com", "itemId": 9, "restId": 2, "itemName": "Fiorentina Steak", "itemPrice": 15, "itemImage": "", "itemQuantity": 3, "itemTotal": 45 }]
+
+
+app.post('/showCart', (req,res) =>{
+    console.log("in show cart");
+    res.writeHead(200, {
+        'Content-type': 'text/plain'
+    });
+    res.end(JSON.stringify(cartitems));
 })
 
 //AllCart
-app.post('/showCart', (req, res) => {
-    console.log("In show cart");
-    console.log(req.body);
-    console.log(req.session.userEmail);
-    if (req.session.userEmail) {
-        console.log("user is set");
+// app.post('/showCart', (req, res) => {
+//     console.log("In show cart");
+//     console.log(req.body);
+//     console.log(req.session.userEmail);
+//     if (req.session.userEmail) {
+//         console.log("user is set");
 
+//         pool.getConnection((err, conn) => {
+//             if (err) {
+//                 console.log("Error while connecting to database");
+//                 res.writeHead(500, {
+//                     'Content-type': 'text/plain'
+//                 });
+//                 res.end("Error while connecting to database");
+//             } else {
+//                 //query
+//                 const sql = `SELECT * FROM cart WHERE userEmail= ${mysql.escape(req.session.userEmail)}`;
+//                 console.log(sql);
+
+//                 conn.query(sql, (err, result) => {
+//                     if (err) {
+//                         console.log(err);
+//                         res.status(400).end("Couldnt get cart items");
+//                     } else {
+//                         console.log(result);
+//                         res.status(200).end(JSON.stringify(result));
+//                     }
+//                 });
+//             }
+//         });
+//     }
+// });
+
+
+//DeleteCartItem
+app.post('/deleteCartItem', (req, res) => {
+    console.log("In deleteCartItem");
+    console.log(req.body);
+
+    if (req.session.userEmail) {
         pool.getConnection((err, conn) => {
             if (err) {
                 console.log("Error while connecting to database");
@@ -749,18 +807,19 @@ app.post('/showCart', (req, res) => {
                 res.end("Error while connecting to database");
             } else {
                 //query
-                const sql = `SELECT * FROM cart WHERE userEmail= ${mysql.escape(req.session.userEmail)}`;
+                const sql = `DELETE FROM cart WHERE userEmail= ${mysql.escape(req.session.userEmail)}
+                            AND itemId= ${req.body.itemId}`;
                 console.log(sql);
-
                 conn.query(sql, (err, result) => {
                     if (err) {
                         console.log(err);
-                        res.status(400).end("Couldnt get cart items");
+                        res.status(400).end("Couldnt delete cart item");
                     } else {
-                        console.log(result);
-                        res.status(200).end(JSON.stringify(result));
+                        console.log("Cart Item deleted successfully");
+                        res.status(200).end("Cart Item deleted successfully");
                     }
                 });
+
             }
         });
     }

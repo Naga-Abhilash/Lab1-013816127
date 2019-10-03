@@ -83,6 +83,7 @@ class searchResults extends Component {
             cuisineName: cuisineName,
             itemName: itemName
         }
+        console.log(data)
 
         axios.post(rootUrl + '/restaurantsbyItemCuisine', data)
             .then(response => {

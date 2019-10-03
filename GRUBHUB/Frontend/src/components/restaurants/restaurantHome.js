@@ -199,8 +199,8 @@ class RestaurantHome extends Component {
                 restImage = "biryani.jpg"
             }
             let unknown = images(`./${restImage}`);
-            let resimg = new Image();
-            resimg = unknown;
+            // let resimg = new Image();
+            // resimg = unknown;
 
 
             return (
