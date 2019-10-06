@@ -1,23 +1,23 @@
-.past-orders{
+#past-orders{
     margin-left: 300px;
     /* max-width: 18rem; */
 }
 
-.item-name{
+#item-name{
     /* float: left; */
     margin-right: 50px;
 }
 
-.item-price{
+#item-price{
     float: left;
     margin-right: 50px;
     /* margin-left: 70px; */
 }
 
-.item-quantity{
+#item-quantity{
     float: left;
     margin-right: 50px;
 }
-.item-Total{
+#item-Total{
     margin-right: 50px;
 }

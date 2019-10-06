@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { rootUrl } from '../../components/config/settings';
+import rootUrl from '../config/settings';
 import { Redirect } from 'react-router-dom'
 import ItemCard from './itemCard'
-import Navbar from '../Navbar/Navbar'
+import Navbar from '../Navbar/navbar'
 import axios from 'axios'
 import './restHome.css'
 import RestCuisines from './restCuisines'
 import swal from 'sweetalert';
 
-var images = require.context('../../images', true);
+var images = require.context('../../../../backend/uploads/', true);
 
 class RestaurantHome extends Component {
     constructor() {
@@ -98,7 +98,7 @@ class RestaurantHome extends Component {
         }
         console.log(data);
         if (itemQuantity > 0) {
-            axios.post(rootUrl + '/addToCart', data)
+            axios.post(rootUrl + '/cart/addToCart', data)
                 .then(response => {
                     console.log(response)
                     if (response.status === 200) {
@@ -206,11 +206,11 @@ class RestaurantHome extends Component {
                     />
                 )
             })
-            let { restImage, restName, restAddress, restPhone } = this.state.itemsByRestaurant[0];
-            if (restImage === "") {
+            let { restName, restImage, restAddress, restPhone } = this.state.itemsByRestaurant[0];
+            if (restImage === "" || restImage === null) {
                 restImage = "biryani.jpg"
             }
-            let unknown = images(`./${restImage}`);
+            let unknown = rootUrl+'/profile/download-file/' + restImage
             // let resimg = new Image();
             // resimg = unknown;
 
@@ -219,14 +219,14 @@ class RestaurantHome extends Component {
                 <div>
                     {redirectVar}
                     <Navbar />
-                    <div className="container">
+                    <div className="container" id="container">
                         <img src={unknown} id="restHomeImage" alt="..." />
                         <div>
-                            <div className="rest-home-details" >
-                                <h2 className="rest-title">{restName}</h2>
+                            <div className="rest-home-details" id="rest-home-details" >
+                                <h2 className="rest-title" id="rest-title">{restName}</h2>
                                 <span>
-                                    <p className="text-left">{restAddress}</p>
-                                    <p className="text-phone"> Phone:  {restPhone}</p>
+                                    <p className="text-left" id="text-left">{restAddress}</p>
+                                    <p className="text-phone" id="text-left"> Phone:  {restPhone}</p>
                                 </span>
                             </div>
                         </div>

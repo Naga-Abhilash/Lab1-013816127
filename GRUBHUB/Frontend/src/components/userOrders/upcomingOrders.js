@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import { rootUrl } from '../../components/config/settings';
-import Navbar from '../Navbar/Navbar';
+import rootUrl from '../config/settings';
+import Navbar from '../Navbar/navbar';
 import UniqueOrders from './uniqueOrders'
 
 class UpcomingOrders extends Component {
@@ -13,7 +13,7 @@ class UpcomingOrders extends Component {
     }
 
     componentDidMount = () => {
-        axios.get(rootUrl + '/upcomingOrders')
+        axios.get(rootUrl + '/orders/upcomingOrders')
             .then(response => {
                 console.log(response.data)
                 if (response.status === 200) {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import { rootUrl } from '../../components/config/settings';
-import Navbar from '../Navbar/Navbar';
+import rootUrl from '../config/settings';
+import Navbar from '../Navbar/navbar';
 import UniqueOrders from './uniqueOrders'
 
 class PastOrders extends Component {
@@ -13,7 +13,7 @@ class PastOrders extends Component {
     }
 
     componentDidMount = () => {
-        axios.post(rootUrl + '/previousOrders')
+        axios.post(rootUrl + '/orders/previousOrders')
             .then(response => {
                 console.log(response.data)
                 if (response.status === 200) {

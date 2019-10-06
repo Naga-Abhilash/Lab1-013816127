@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import './restHome.css'
+import rootUrl from '../config/settings';
 
 
-var images = require.context('../../images', true);
+var images = require.context('../../../../backend/uploads/', true);
 
 class ItemDisplay extends Component {
     
     render() {
 
         let { itemId, itemName, itemPrice, itemImage, restId } = this.props.itemIndividual
-        if (itemImage === "") {
+        if (itemImage === "" || itemImage== null) {
             itemImage = "biryani.jpg"
         }
-        let unknown = images(`./${itemImage}`)
+        let unknown =  rootUrl+'/profile/download-file/' + itemImage
         let itemQuantity = ""
         let allQuant = this.props.quantity.Quantity;
         for(let i=0; i<allQuant.length; i++)
@@ -24,13 +25,13 @@ class ItemDisplay extends Component {
         return (
 
             <div>
-                <div className="itemRight" >
+                <div className="itemRight" id="itemRight" >
                     <div className="col-md-3 col-sm-6">
-                        <div className="card cardclass" id={itemName} >
-                            <img src={unknown} className="card-img-top" alt="..." />
+                        <div className="card cardclass" id="cardclass" >
+                            <img src={unknown} className="card-img-top" id="card-img-top" alt="..." />
                             <div className="card-block" id="card-title-text">
-                                <h6 className="card-title">{itemName}</h6>
-                                <p className="card-text">${itemPrice}.00</p>
+                                <h6 className="card-title" id="card-title">{itemName}</h6>
+                                <p className="card-text" id="card-text">${itemPrice}</p>
                                 <span>
                                     <button className="btn btn-primary" onClick={() => this.props.handleDecrement(itemName)}> - </button>
                                     <input id="quant-text" type="number" readOnly value= {itemQuantity}   />

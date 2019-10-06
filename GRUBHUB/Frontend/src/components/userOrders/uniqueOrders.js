@@ -31,11 +31,11 @@ class UniqueOrders extends Component {
 
         return (
             <div>
-                <div className="past-orders border-secondary mb-3">
-                    <h5 className="card-header w-75 ">order Id: {orderId}   &nbsp;&nbsp;&nbsp;&nbsp;  {newstatus}</h5>
+                <div className="past-orders border-secondary mb-3" id="past-orders">
+                    <h5 className="card-header w-75 text-left">orderId: {orderId}   &nbsp;&nbsp;&nbsp;&nbsp;  {newstatus}</h5>
                     <div className="card-body ">
                         {orderitems}
-                        <p className="text-danger" >Total: ${orderTotal}</p>
+                        <p className="text-danger  text-left" >Total: ${orderTotal}</p>
                     </div>
                 </div>
             </div>

@@ -1,10 +1,10 @@
 import React, { Component, PureComponent } from 'react';
-import Navbar from '../Navbar/Navbar';
+import Navbar from '../Navbar/navbar';
 import RestCard from './restCards';
 import LeftPanel from './leftPanel';
 import axios from 'axios'
 import {Redirect} from 'react-router-dom'
-import { rootUrl } from '../../components/config/settings';
+import rootUrl  from '../config/settings';
 import './cardstyles.css';
 
 let redirectVar = null;
@@ -45,7 +45,7 @@ class searchResults extends Component {
         const data = {
             restId: restId
         }
-        axios.post(rootUrl + '/itemsByRestaurant', data)
+        axios.post(rootUrl + '/restaurant/itemsByRestaurant', data)
             .then(response => {
                 console.log(response)
                 if (response.status === 200) {
@@ -75,7 +75,7 @@ class searchResults extends Component {
         }
         console.log(data)
         if(data.cuisineName){
-        axios.post(rootUrl + '/restaurantsbyItemCuisine', data)
+        axios.post(rootUrl + '/restaurant/restaurantsbyItemCuisine', data)
             .then(response => {
                 console.log(response)
                 if (response.status === 200) {

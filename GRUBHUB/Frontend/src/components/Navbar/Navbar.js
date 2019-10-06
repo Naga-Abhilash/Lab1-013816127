@@ -1,79 +1,73 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import {Link} from 'react-router-dom';
 import cookie from 'react-cookies';
-import axios from 'axios';
-import { Link, Redirect } from 'react-router-dom'
-import './navStyles.css'
+// import {Redirect} from 'react-router';
 
-var redirecter = null;
-class Navbar extends Component {
+class NavBar extends Component{
+constructor(){
+    super();
+    this.handleLogout=this.handleLogout.bind(this)
+}
 
-    constructor() {
-        super();
-
-        //bind
-        this.handleLogout = this.handleLogout.bind(this);
-    }
-    componentDidMount = () =>{
-        
-    }
-    handleLogout = (e) => {
-        //  e.preventDefault();
-        localStorage.removeItem("email");
-        // redirecter = <Redirect to = "/login"/>
+handleLogout = () => {
+        cookie.remove('cookie', { path: '/' })
+        localStorage.removeItem('accountType')
+        localStorage.clear();
     }
 
-    render() {
-
+render(){
+        // let redirectVar = null;
+        // if(!cookie.load('cookie')){
+        //     redirectVar = <Redirect to="/login"/>
+        // }
+        // let ownerLogin;
         let navLogin = null;
-        if (cookie.load('cookie')) {
-            console.log("Able to read local storage");
-            navLogin = (
-                <div className="collapse navbar-collapse">
-                    <ul className="navbar-nav">
-                        <li className="nav-item active">
-                            <a className="nav-link" href="/">Home </a>
-                        </li>
-                        <li className="nav-item active">
-                            <a className="nav-link" href="/profile">Your Profile </a>
-                        </li>
-                        <li className="nav-item dropdown active">
-                            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-target = "dropdown-target">
-                                Orders
-                            </a>
-                            <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a className="dropdown-item" href="/upcomingorders">Upcoming Orders</a>
-                                <a className="dropdown-item" href="/pastorders">Past Orders</a>
-                            </div>
-                        </li>
-                        <li className="nav-item active">
-                            <a className="nav-link" href="/cart">Cart<span className="badge badge-danger">9</span> </a>
-                        </li>
-
+        if(cookie.load('cookie')){
+            console.log("Able to read cookie");
+            if(localStorage.getItem('accountType')==="2"){
+                console.log("near nav login")
+                navLogin=(
+                    <ul className="nav navbar-inverse ">
+                         <li><Link to="/ownerhome">Home</Link></li>&nbsp;&nbsp;
+                         <li><Link to="/menu">Menu</Link></li>&nbsp;&nbsp;
+                         <li><Link to="/account">{localStorage.getItem("userName")}</Link></li>&nbsp;&nbsp;
+                         <li><Link to="/" onClick = {this.handleLogout}>Logout</Link></li>
                     </ul>
-                    <div className="nav-login-logout">
-                        <ul className="nav ">
-                            <li><Link to="/login" onClick={this.handleLogout}> <strong>Logout</strong></Link></li>
+                )
+                }
+            if(localStorage.getItem('accountType')==="1"){
+                    console.log("near nav login")
+                    navLogin=(
+                        <ul className="nav navbar-inverse ">
+                             <li><Link to="/userhome">Home</Link></li>&nbsp;&nbsp;&nbsp;&nbsp;
+                             <li className="dropdown active">
+                                    <a className="dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Orders
+                                    </a>
+                                    <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <a className="dropdown-item" href="/upcomingorders">Upcoming Orders</a>
+                                        <a className="dropdown-item" href="/pastorders">Past Orders</a>
+                                    </div>
+                            </li>&nbsp;&nbsp;&nbsp;&nbsp;
+                             <li><Link to="/cart">Cart</Link></li>&nbsp;&nbsp;&nbsp;&nbsp;
+                             <li><Link to="/account">{localStorage.getItem("userName")}</Link></li>&nbsp;&nbsp;&nbsp;&nbsp;
+                             <li><Link to="/" onClick = {this.handleLogout}>Logout</Link></li>
                         </ul>
-                    </div>
-                </div>
-            );
-        } else {
-            //Else display login button
-            console.log("Not Able to read cookie");
-            navLogin = null
-        }
-
-        return (
-
-            <div>
-                {redirecter}
-                <nav className="navbar navbar-expand-lg navbar-dark bg-danger">
-                    <a className="navbar-brand" href="/" ><h2 className="logo-main font-weight-bold"> GRUBHUB</h2></a>
+                )
+            }
+          }
+        return(
+            <header id="header">
+                {/* {redirectVar} */}
+                <nav className="navbar shadow-sm bg-white rounded navbar-dark bg-white text-left">
+                    <a className="navbar-brand" href="/"> 
+                        <h3 className="font-weight-bold text-danger" >&nbsp; GRUBHUB</h3>
+                    </a>
                     {navLogin}
-                </nav>
-            </div>
-        )
+                </nav> 
+            </header>
+        ) ;
     }
 }
 
-export default Navbar;
+export default NavBar;

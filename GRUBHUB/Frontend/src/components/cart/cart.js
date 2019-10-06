@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Navbar from '../Navbar/Navbar'
+import Navbar from '../Navbar/navbar'
 import swal from 'sweetalert';
-import { rootUrl } from '../../components/config/settings';
+import rootUrl from '../config/settings';
 import axios from 'axios'
 import CartCard from './cartCard'
 import './cartCardcss.css'
@@ -15,7 +15,7 @@ class Cart extends Component {
         }
     }
     componentDidMount = () => {
-        axios.post(rootUrl + '/showCart')
+        axios.post(rootUrl + '/cart/showCart')
             .then(response => {
                 console.log(response)
                 if (response.status === 200) {
@@ -33,7 +33,7 @@ class Cart extends Component {
     }
 
     placeOrder = () => {
-        axios.post(rootUrl + '/orderItems')
+        axios.post(rootUrl + '/orders/orderItems')
             .then(response => {
                 console.log(response)
                 if (response.status === 200) {
@@ -54,7 +54,7 @@ class Cart extends Component {
         const data = {
             itemId: itemId
         }
-        axios.post(rootUrl + '/deleteCartItem', data)
+        axios.post(rootUrl + '/cart/deleteCartItem', data)
             .then(response => {
                 console.log(response)
                 if (response.status === 200) {
@@ -102,7 +102,7 @@ class Cart extends Component {
                         {cart}
                         {message}
                         <span id="placeorder">
-                            <p id="carttotal">Your cart total : ${cartTotal}.00</p>
+                            <p id="carttotal">Your cart total : ${cartTotal}</p>
                             <button onClick={this.placeOrder} className="btn btn-success" >Place Order</button>
                         </span>
                     </div>
