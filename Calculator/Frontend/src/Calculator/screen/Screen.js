@@ -2,10 +2,10 @@ import React from "react";
 import EvaluationScreen from "./EvaluationScreen.js";
 import ResultScreen from "./resultscreen.js";
 
-const Screen = () => (
+const Screen = (props) => (
   <div className="screen">
-    <ResultScreen />
-    <EvaluationScreen />
+    <ResultScreen>{props.result}</ResultScreen>
+    <EvaluationScreen >{props.equation}</EvaluationScreen>
   </div>
 );
 

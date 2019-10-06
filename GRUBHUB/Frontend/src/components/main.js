@@ -9,6 +9,8 @@ import searchResults from './Search/searchResults'
 import Testcss from './Search/testcss'
 import RestaurantHome from './restaurants/restaurantHome'
 import Cart from './cart/cart'
+import PastOrders from './userOrders/pastOrders'
+import UpcomingOrders from './userOrders/upcomingOrders'
 
 class Main extends Component {
 
@@ -26,6 +28,9 @@ class Main extends Component {
                     <Route path="/testcss" component={Testcss} />
                     <Route path="/resthome" component={RestaurantHome} />
                     <Route path = "/cart" component = {Cart}/>
+                    <Route path="/pastorders" component={PastOrders} />
+                    <Route path="/upcomingorders" component={UpcomingOrders} />
+
                 </div>
             </div>
         );

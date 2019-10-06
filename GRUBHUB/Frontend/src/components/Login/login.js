@@ -43,6 +43,7 @@ class LoginForm extends Component {
                 if (response.status === 200) {
                     console.log("response", response.data)
                     localStorage.setItem("accountType", response.data)
+                    localStorage.setItem("userEmail", data.userEmail)
                     this.setState({
                         authFlag: true
                     })

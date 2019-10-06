@@ -21,64 +21,65 @@ class RestaurantHome extends Component {
         }
     }
     componentDidMount() {
+        if (localStorage.getItem("itemsByRestaurant")) {
+            let itemsByRestaurant = localStorage.getItem("itemsByRestaurant")
+            let sessionItemDetails = JSON.parse(itemsByRestaurant);
+            let lookup = {};
+            let items = sessionItemDetails;
+            let result = [];
 
-        let itemsByRestaurant = sessionStorage.getItem("itemsByRestaurant")
-        let sessionItemDetails = JSON.parse(itemsByRestaurant);
-        let lookup = {};
-        let items = sessionItemDetails;
-        let result = [];
+            for (let item, i = 0; item = items[i++];) {
+                let itemtype = item.itemType;
 
-        for (let item, i = 0; item = items[i++];) {
-            let itemtype = item.itemType;
-
-            if (!(itemtype in lookup)) {
-                lookup[itemtype] = 1;
-                result.push(itemtype);
+                if (!(itemtype in lookup)) {
+                    lookup[itemtype] = 1;
+                    result.push(itemtype);
+                }
             }
-        }
-        console.log(sessionItemDetails.length);
+            console.log(sessionItemDetails.length);
 
-        result.sort();
-        console.log(result)
-        let parseQuantity = '{"Quantity":[]}'
-        for (let item, i = 0; item = items[i++];) {
-            let itemNameQ = item.itemName;
+            result.sort();
+            console.log(result)
+            let parseQuantity = '{"Quantity":[]}'
+            for (let item, i = 0; item = items[i++];) {
+                let itemNameQ = item.itemName;
 
-            parseQuantity = JSON.parse(parseQuantity)
-            parseQuantity.Quantity.push({ "itemName": itemNameQ, "itemQuantity": 0 })
-            parseQuantity = JSON.stringify(parseQuantity)
+                parseQuantity = JSON.parse(parseQuantity)
+                parseQuantity.Quantity.push({ "itemName": itemNameQ, "itemQuantity": 0 })
+                parseQuantity = JSON.stringify(parseQuantity)
+            }
+            console.log(typeof parseQuantity);
+            this.setState({
+                itemsByRestaurant: sessionItemDetails,
+                itemUniqueTypes: result,
+                itemQuantity: parseQuantity
+            })
         }
-        console.log(typeof parseQuantity);
-        this.setState({
-            itemsByRestaurant: sessionItemDetails,
-            itemUniqueTypes: result,
-            itemQuantity: parseQuantity
-        })
     }
 
     itemByItemType = (itemType) => {
         //e.preventDefault()
         console.log("in itemByItemType method");
         console.log(itemType)
-        
+
         let itemsByRest = this.state.itemsByRestaurant;
         let itemsType = '{"requiredType":[]}'
-        for (let i = 0; i< itemsByRest.length;i++) {
+        for (let i = 0; i < itemsByRest.length; i++) {
             let itemNameQ = itemsByRest[i];
-            
+
             itemsType = JSON.parse(itemsType)
-            
-            if (itemNameQ.itemType === itemType){
+
+            if (itemNameQ.itemType === itemType) {
                 itemsType.requiredType.push(itemNameQ)
             }
             itemsType = JSON.stringify(itemsType)
         }
         // itemsType = JSON.parse(itemsType);
         console.log(typeof itemsType);
-        
 
-        sessionStorage.setItem('itemSections', itemsType)
-        
+
+        localStorage.setItem('itemSections', itemsType)
+
         this.setState({
             itemsByrestCuisine: itemsType
         })
@@ -96,20 +97,31 @@ class RestaurantHome extends Component {
             itemTotal: itemTotal
         }
         console.log(data);
-        if(itemQuantity > 0 ){
+        if (itemQuantity > 0) {
             axios.post(rootUrl + '/addToCart', data)
                 .then(response => {
                     console.log(response)
                     if (response.status === 200) {
-                        
+
                         swal("Success!", "Item Added to cart!", "success");
                     }
                     else {
                         console.log("Didn't fetch items data")
                     }
-                })
+                }).catch((err) => {
+                    if (err) {
+                        if (err.response.status === 406) {
+                            console.log("Error messagw", err.response.status);
+                            swal(err.response.data)
+                        }
+                        else {
+                            swal("Database connection failed. please try again later")
+                        }
+                    }
+
+                });
         }
-        else{
+        else {
             alert("Quantity should me more than 0");
         }
 
@@ -158,20 +170,20 @@ class RestaurantHome extends Component {
         }
         let i = -1;
         let route = null;
-        if(this.state.itemsByrestCuisine){
+        if (this.state.itemsByrestCuisine) {
             route = JSON.parse(this.state.itemsByrestCuisine);
             route = route.requiredType
-            sessionStorage.removeItem('itemSections')
+            localStorage.removeItem('itemSections')
         }
-        else if(this.state.itemsByRestaurant){
+        else if (this.state.itemsByRestaurant) {
             route = this.state.itemsByRestaurant
         }
         console.log(route);
-        
+
         if (route) {
             itemDetails = route.map((item, index) => {
                 let quant = JSON.parse(this.state.itemQuantity)
-                
+
                 i = i + 1
                 return (
                     <ItemCard

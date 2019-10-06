@@ -1,5 +1,5 @@
 import React from "react";
 
-const button = props => <button className="btn">{props.children}</button>;
+const button = props => <button onClick ={props.handleclick} className="btn">{props.children}</button>;
 
 export default button;

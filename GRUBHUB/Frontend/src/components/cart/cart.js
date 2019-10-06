@@ -32,17 +32,37 @@ class Cart extends Component {
             })
     }
 
+    placeOrder = () => {
+        axios.post(rootUrl + '/orderItems')
+            .then(response => {
+                console.log(response)
+                if (response.status === 200) {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                    swal("Success", "Your order has been placed", "success")
 
+                    // this.props.history.push('/searchresults')
+                }
+                else {
+                    console.log("Didn't fetch items data")
+                }
+            })
+    }
     deleteFromCart = (itemId) => {
         console.log(itemId);
         const data = {
-            itemId:itemId
+            itemId: itemId
         }
         axios.post(rootUrl + '/deleteCartItem', data)
             .then(response => {
                 console.log(response)
                 if (response.status === 200) {
-                    swal("Success","Item Deleted from Cart", "success")
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                    swal("Success", "Item Deleted from Cart", "success")
+
                     // this.props.history.push('/searchresults')
                 }
                 else {
@@ -70,15 +90,20 @@ class Cart extends Component {
                 )
 
             })
+            let message = ""
+            if (cartTotal === 0) {
+                message = "Your Cart is empty. Please add food to cart to place order."
+            }
             return (
 
                 <div>
                     <Navbar />
                     <div>
                         {cart}
+                        {message}
                         <span id="placeorder">
                             <p id="carttotal">Your cart total : ${cartTotal}.00</p>
-                            <button className="btn btn-success" >Place Order</button>
+                            <button onClick={this.placeOrder} className="btn btn-success" >Place Order</button>
                         </span>
                     </div>
                 </div>

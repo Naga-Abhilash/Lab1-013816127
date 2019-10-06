@@ -1,5 +1,5 @@
 import React from "react";
 
-const EvaluationScreen = () => <div className="evaluation-screen">50+100</div>;
+const EvaluationScreen = (props) => <div className="evaluation-screen">{props.children}</div>;
 
 export default EvaluationScreen;

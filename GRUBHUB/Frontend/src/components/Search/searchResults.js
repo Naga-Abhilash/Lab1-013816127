@@ -18,8 +18,8 @@ class searchResults extends Component {
     }  
     
     componentDidMount(){
-        if (sessionStorage.getItem("restaurantResults")){
-            let restResultsBySearch = sessionStorage.getItem("restaurantResults")
+        if (localStorage.getItem("restaurantResults")){
+            let restResultsBySearch = localStorage.getItem("restaurantResults")
             let restDetails = JSON.parse(restResultsBySearch);
             this.setState({
             
@@ -27,8 +27,8 @@ class searchResults extends Component {
             })
             console.log(restDetails)
         }
-        if (sessionStorage.getItem("restCuisineDetails")) {
-            let restResultsBySearch = sessionStorage.getItem("restCuisineDetails")
+        if (localStorage.getItem("restCuisineDetails")) {
+            let restResultsBySearch = localStorage.getItem("restCuisineDetails")
             let restDetails = JSON.parse(restResultsBySearch);
             this.setState({
 
@@ -37,16 +37,6 @@ class searchResults extends Component {
         }
     }
 
-    handlerestCuisineResults = (restDetails) => {
-        this.setState({
-            restCuisineResults : restDetails
-        })
-    }
-    handlerestSearchResults = (restDetails) => {
-        this.setState({
-            restSearchResults: restDetails
-        })
-    }
     
     visitRestaurant = (restId) => {
         console.log("in VisitRestaurant method");
@@ -62,7 +52,7 @@ class searchResults extends Component {
                     let itemDetails = JSON.stringify(response.data)
                     console.log(response.data);
 
-                    sessionStorage.setItem('itemsByRestaurant', itemDetails)
+                    localStorage.setItem('itemsByRestaurant', itemDetails)
                     console.log("itemDetails:" + typeof itemDetails)
                     this.props.history.push('/resthome')
                 }
@@ -78,13 +68,13 @@ class searchResults extends Component {
         console.log(cuisineName);
         
         //console.log(copyResults[id])
-        let itemName = sessionStorage.getItem("itemName")
+        let itemName = localStorage.getItem("itemName")
         const data = {
             cuisineName: cuisineName,
             itemName: itemName
         }
         console.log(data)
-
+        if(data.cuisineName){
         axios.post(rootUrl + '/restaurantsbyItemCuisine', data)
             .then(response => {
                 console.log(response)
@@ -92,7 +82,7 @@ class searchResults extends Component {
                     let restCuisineDetails = JSON.stringify(response.data)
                     console.log(response.data);
 
-                    sessionStorage.setItem('restCuisineDetails', restCuisineDetails)
+                    localStorage.setItem('restCuisineDetails', restCuisineDetails)
                     console.log("itemDetails:" + restCuisineDetails)
                     window.location.reload();
                     // this.props.history.push('/searchresults')
@@ -101,39 +91,19 @@ class searchResults extends Component {
                     console.log("Didn't fetch items data")
                 }
             })
+        }
+        else{
+            alert("Please try again")
+        }
     }
     
-    // getdetails = () =>{
-    //     let restResultsBySearch = null;
-    //     let restDetails = null;
-    //     let cuisinePanel = null;
-
-    //     let restCuisineBySearch = null;
-    //     let route = null;
-
-    //     // if (sessionStorage.getItem("restCuisineDetails")){
-    //     //     restCuisineBySearch = sessionStorage.getItem("restCuisineDetails")
-    //     //     restDetails = JSON.parse(restCuisineBySearch);
-    //     //     this.handlerestCuisineResults(restDetails)
-    //     //     // this.state.restCuisineResults = restDetails;
-    //     //     route = this.state.restCuisineResults;
-    //     // }
-    //     if (!this.state.restSearchResults) {
-    //         restResultsBySearch = sessionStorage.getItem("restaurantResults")
-    //         restDetails = JSON.parse(restResultsBySearch);
-    //         this.handlerestSearchResults(restDetails)
-    //         //this.state.restSearchResults = restDetails;
-    //         route = this.state.restSearchResults;
-    //         // console.log(restDetails);
-
-    //     }
-    // }
+    
     render() {
         
         let route = null
         if (this.state.restCuisineResults){
             route = this.state.restCuisineResults;
-            sessionStorage.removeItem("restCuisineDetails")
+            localStorage.removeItem("restCuisineDetails")
         }
         else if(this.state.restSearchResults){
             route = this.state.restSearchResults;
