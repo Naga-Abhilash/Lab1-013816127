@@ -9,20 +9,22 @@ a {
     text-decoration: none !important;
 }
 
+#card-title-text{
+    text-align: center;
+}
 #search-results-text{
     padding-left: 15px;
 }
 
 
-#card-title-text{
-    text-align: center;
-}
+
 
 #btn-rest-visit{
     width: 100%;
 }
-.card-title {
+#card-title {
     color: black;
+    background-color: Transparent;
 }
 
 .card-text{

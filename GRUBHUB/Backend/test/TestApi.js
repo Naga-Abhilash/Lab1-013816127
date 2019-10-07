@@ -7,11 +7,11 @@ var server = supertest.agent("http://localhost:3001");
 
 var request = require("request");
 
-describe("Cancel orders status by owner", function () {
-    it("Cancel orders status by owner", function (done) {
+describe("login", function () {
+    it("login", function (done) {
         server
-            .post("/itemsByRestaurant")
-            .send({ restId: 2 })
+            .post("/login")
+            .send({ userEmail: "user1@gmail.com", userPassword: "qwerty12345" })
             .expect(200)
             .end(function (err, res) {
                 res.status.should.equal(200);
@@ -20,54 +20,57 @@ describe("Cancel orders status by owner", function () {
     });
 });
 
-// describe("Delivered orders status by owner", function () {
-//     it("Delivered orders status by owner", function (done) {
-//         server
-//             .post("/deliveredOrder")
-//             .send({ orderId: 2 })
-//             .expect(200)
-//             .end(function (err, res) {
-//                 res.status.should.equal(404);
-//                 done();
-//             });
-//     });
-// });
+describe("restaurantsbyItemName", function () {
+    it("restaurantsbyItemName", function (done) {
+        server
+            .post("/restaurant/restaurantsbyItemName")
+            .send({ itemName: "chicken" })
+            .expect(200)
+            .end(function (err, res) {
+                res.status.should.equal(200);
+                done();
+            });
+    });
+});
 
-// describe("Delete item by owner", function () {
-//     it("Delete item by owner", function (done) {
-//         server
-//             .post("/deleteitem")
-//             .send({ orderId: 2 })
-//             .expect(200)
-//             .end(function (err, res) {
-//                 res.status.should.equal(404);
-//                 done();
-//             });
-//     });
-// });
+describe("restaurantsbyItemCuisine", function () {
+    it("restaurantsbyItemCuisine", function (done) {
+        server
+            .post("/restaurant/restaurantsbyItemCuisine")
+            .send({
+                cuisineName: "Indian", itemName: "chicken"
+            })
+            .expect(200)
+            .end(function (err, res) {
+                res.status.should.equal(200);
+                done();
+            });
+    });
+});
 
-// describe("View item by owner", function () {
-//     it("View item by owner", function (done) {
-//         server
-//             .post("/viewitem")
-//             .send({ orderId: 2 })
-//             .expect(200)
-//             .end(function (err, res) {
-//                 res.status.should.equal(404);
-//                 done();
-//             });
-//     });
-// });
+describe("itemsByRestaurant", function () {
+    it("itemsByRestaurant", function (done) {
+        server
+            .post("/restaurant/itemsByRestaurant")
+            .send({ restId: 1 })
+            .expect(200)
+            .end(function (err, res) {
+                res.status.should.equal(200);
+                done();
+            });
+    });
+});
 
-// describe("Manage orders by owner", function () {
-//     it("Manage orders by owner", function (done) {
-//         server
-//             .post("/manageOrders")
-//             .send({ orderStatus: "preparing", orderId: 2 })
-//             .expect(200)
-//             .end(function (err, res) {
-//                 res.status.should.equal(404);
-//                 done();
-//             });
-//     });
-// }) 
+
+describe("getCuisines", function () {
+    it("getCuisines", function (done) {
+        server
+            .get("/restaurant/getCuisines")
+            .send({})
+            .expect(200)
+            .end(function (err, res) {
+                res.status.should.equal(200);
+                done();
+            });
+    });
+});

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {Link} from 'react-router-dom';
 import cookie from 'react-cookies';
+import './navStyles.css'
 // import {Redirect} from 'react-router';
 
 class NavBar extends Component{
@@ -59,9 +60,9 @@ render(){
         return(
             <header id="header">
                 {/* {redirectVar} */}
-                <nav className="navbar shadow-sm bg-white rounded navbar-dark bg-white text-left">
+                <nav className="navbar shadow-sm bg-danger navbar-dark bg-danger text-left">
                     <a className="navbar-brand" href="/"> 
-                        <h3 className="font-weight-bold text-danger" >&nbsp; GRUBHUB</h3>
+                        <h3 className="font-weight-bold text-white" >&nbsp; GRUBHUB</h3>
                     </a>
                     {navLogin}
                 </nav> 

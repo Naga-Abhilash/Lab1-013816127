@@ -4,7 +4,7 @@ const app = express.Router();
 //logout
 app.post('/logout', function (req, res) {
     console.log('POST Logout!');
-    localStorage.clear();
+    
     res.writeHead(200, {
         'Content-type': 'text/plain'
     });

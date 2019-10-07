@@ -21,7 +21,7 @@ class Items extends Component{
     }
 
     componentDidMount(){
-        console.log("Inside get profile after component did mount");
+        // console.log("Inside get profile after component did mount");
         //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data

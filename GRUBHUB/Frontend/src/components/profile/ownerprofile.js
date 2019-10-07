@@ -27,6 +27,8 @@ const ProfileSchema = Yup.object().shape({
 const RestaurantSchema = Yup.object().shape({
   restName: Yup.string()
     .required("Restaurant name is required"),
+  restDesc: Yup.string()
+    .required("Restaurant description is required"),
   restPhone: Yup.string()
     .matches(phoneRegExp, 'Phone number is not valid')
     .required("Restaurant phone number is required"),
@@ -49,6 +51,7 @@ class OwnerProfile extends Component{
                 profileImagePreview: undefined,
     
                 restName: "Sample Restaurant",
+                restDesc:"No description",
                 restAdr:"Sample Resto Address",
                 restZip: "55555",
                 restPhone: "9999999999",
@@ -81,6 +84,7 @@ componentDidMount(){
                 //   userAdr: response.data[0].userAddress,
                 //   userZip: response.data[0].userZip,
                   restName: response.data[1].restName,
+                  restDesc: response.data[1].restDesc,
                   restAdr:response.data[1].restAddress,
                   restZip: response.data[1].restZip,
                   restPhone: response.data[1].restPhone,
@@ -278,6 +282,7 @@ submitRestaurant=(details)=>{
   console.log("rest image",this.state.restImage)
         const data = {
             restName: details.restName,
+            restDesc: details.restDesc,
             restAddress:details.restAddress,
             restZip: details.restZip,
             restPhone: details.restPhone,
@@ -472,6 +477,7 @@ render(){
                     initialValues={
                         {
                             restAddress:this.state.restAdr,
+                            restDesc:this.state.restDesc,
                             restName:this.state.restName,
                             restPhone:this.state.restPhone,
                             restZip:this.state.restZip }}
@@ -499,6 +505,26 @@ render(){
                                                     <ErrorMessage
                                                         component="div"
                                                         name="restName"
+                                                        align="text-left"
+                                                        className="invalid-feedback"
+                                                    />
+                                                </div>
+
+                                                <div className="form-group text-left col-sm-5">
+                                                <label htmlFor="restDesc">Restaurant Description</label>
+                                                    <Field
+                                                          type="text"
+                                                          name="restDesc"
+                                                        //   autofocus="true"
+                                                        id="restDesc"
+                                                        disabled
+                                                          className={`form-control ${
+                                                          touched.restDesc && errors.restDesc ? "is-invalid" : ""
+                                                          }`}
+                                                    />
+                                                    <ErrorMessage
+                                                        component="div"
+                                                        name="restDesc"
                                                         align="text-left"
                                                         className="invalid-feedback"
                                                     />

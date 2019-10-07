@@ -7,7 +7,7 @@ const app = express.Router();
 //AllRestaurants
 app.get('/allrestaurants', (req,res)=>{
     console.log("In allrestaurants GET");
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
     pool.getConnection((err,conn)=>{
         if(err){
             console.log("Error while connecting to database");
@@ -50,7 +50,7 @@ app.post('/restaurantsbyItemName', (req, res) => {
     console.log(req.body);
     console.log(req.session);
     
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
         pool.getConnection((err, conn) => {
             if (err) {
                 console.log("Error while connecting to database");
@@ -62,7 +62,7 @@ app.post('/restaurantsbyItemName', (req, res) => {
   
                 //query
                 const sql = `SELECT DISTINCT r.restName, r.restId, r.restImage, r.restDesc, r.restAddress,
-                        i.cuisineId, i.cuisineImage, i.cuisineName FROM restaurants r, items i
+                        i.cuisineId, i.cuisineName FROM restaurants r, items i
             WHERE r.restId= i.restId AND i.itemName LIKE '%${req.body.itemName + "%'"}`;
                 console.log(sql);
                 conn.query(sql, (err, result) => {
@@ -97,7 +97,7 @@ app.post('/restaurantsbyItemCuisine', (req, res) => {
     console.log(req.body);
     console.log(req.session);
   
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
   
   
         pool.getConnection((err, conn) => {
@@ -111,7 +111,7 @@ app.post('/restaurantsbyItemCuisine', (req, res) => {
   
                 //query
                 const sql = `SELECT DISTINCT r.restName, r.restId, r.restImage, r.restDesc, r.restAddress,
-                        i.cuisineId, i.cuisineImage, i.cuisineName FROM restaurants r, items i
+                        i.cuisineId,  i.cuisineName FROM restaurants r, items i
                     WHERE r.restId= i.restId AND i.cuisineName = ${mysql.escape(req.body.cuisineName)} AND 
                      i.itemName LIKE '%${req.body.itemName + "%'"}`;
                 // const sql = `SELECT DISTINCT r.restName FROM restaurants r, items i WHERE r.restId=i.restId
@@ -151,9 +151,9 @@ app.post('/restaurantsbyItemCuisine', (req, res) => {
 app.post('/itemsByRestaurant', (req, res) => {
     console.log("In itemsByRestaurant");
     console.log(req.body.restId);
-    console.log(localStorage.getItem('userEmail'));
+    console.log(req.session.userEmail);
   
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
         pool.getConnection((err, conn) => {
             if (err) {
                 console.log("Error while connecting to database");
@@ -192,7 +192,7 @@ app.post('/itemsByRestaurant', (req, res) => {
 app.put("/updaterestdetails", (req, res) => {
     console.log("Inside update restaurant");
   
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
         pool.getConnection((err, conn) => {
             if (err) {
                 console.log("Error while creating connection");
@@ -203,7 +203,7 @@ app.put("/updaterestdetails", (req, res) => {
             } else {
                 const sql1 =
                     "SELECT userId from users WHERE userEmail = " +
-                    mysql.escape(localStorage.getItem('userEmail'));
+                    mysql.escape(req.session.userEmail);
                 console.log("sql1---" + sql1);
                 conn.query(sql1, (err, result1) => {
                     if (err) {
@@ -221,6 +221,9 @@ app.put("/updaterestdetails", (req, res) => {
                             "," +
                             "restAddress = " +
                             mysql.escape(req.body.restAddress) +
+                            "," +
+                            "restDesc = " +
+                            mysql.escape(req.body.restDesc) +
                             "," +
                             "restZip = " +
                             mysql.escape(req.body.restZip) +
@@ -262,7 +265,7 @@ app.put("/updaterestdetails", (req, res) => {
 app.get('/getCuisines', (req,res)=>{
     console.log("In getCuisines");
     
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
     pool.getConnection((err,conn)=>{
         if(err){
             console.log("Error while connecting to database");
@@ -272,7 +275,7 @@ app.get('/getCuisines', (req,res)=>{
             res.end("Error while connecting to database");
         }else{
             //query
-            const sql = `SELECT DISTINCT cuisineName, cuisineImage FROM items`;
+            const sql = `SELECT DISTINCT cuisineName FROM items`;
             //console.log(sql);
             conn.query(sql, (err,result)=>{
                 if(err){
@@ -302,7 +305,7 @@ app.get('/getCuisines', (req,res)=>{
 //addItem
 app.post("/additem", (req, res) => {
     console.log("Inside add items");
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
       pool.getConnection((err, conn) => {
         if (err) {
           console.log("Error while creating connection");
@@ -313,7 +316,7 @@ app.post("/additem", (req, res) => {
         } else {
           const sql1 =
             "SELECT r.restId from restaurants r, users u WHERE u.userId = r.userId and u.userEmail = " +
-            mysql.escape(localStorage.getItem('userEmail')) +
+            mysql.escape(req.session.userEmail) +
             "and u.accountType = " +
             2;
           console.log("sql1---" + sql1);
@@ -388,7 +391,7 @@ app.post("/additem", (req, res) => {
   //edit item
 app.post("/updateitem", (req, res) => {
     console.log("Inside update item details");
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
     pool.getConnection((err, conn) => {
       if (err) {
         console.log("Error while creating connection");
@@ -440,7 +443,7 @@ app.post("/updateitem", (req, res) => {
   //Allsections
   app.get("/allsections", (req, res) => {
     console.log("Inside all sections");
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
       pool.getConnection((err, conn) => {
         if (err) {
           console.log("Error while creating connection");
@@ -451,7 +454,7 @@ app.post("/updateitem", (req, res) => {
         } else {
           const sql1 =
             "SELECT r.restId from restaurants r, users u WHERE u.userId = r.userId and u.userEmail = " +
-            mysql.escape(localStorage.getItem('userEmail')) +
+            mysql.escape(req.session.userEmail) +
             "and u.accountType = " +
             2;
           conn.query(sql1, (err, result1) => {
@@ -489,7 +492,7 @@ app.post("/updateitem", (req, res) => {
   //AllItems
   app.get("/allItems", (req, res) => {
     console.log("Inside all items");
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
       pool.getConnection((err, conn) => {
         if (err) {
           console.log("Error while creating connection");
@@ -500,7 +503,7 @@ app.post("/updateitem", (req, res) => {
         } else {
           const sql1 =
             "SELECT r.restId from restaurants r, users u WHERE u.userId = r.userId and u.userEmail = " +
-            mysql.escape(localStorage.getItem('userEmail')) +
+            mysql.escape(req.session.userEmail) +
             "and u.accountType = " +
             2;
           conn.query(sql1, (err, result1) => {
@@ -538,7 +541,7 @@ app.post("/updateitem", (req, res) => {
 //itemsBasedonSections
 app.post("/itemsbasedonsections", (req, res) => {
     console.log("Inside items based on sections");
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
       pool.getConnection((err, conn) => {
         if (err) {
           console.log("Error while creating connection");
@@ -549,7 +552,7 @@ app.post("/itemsbasedonsections", (req, res) => {
         } else {
           const sql1 =
             "SELECT r.restId from restaurants r, users u WHERE u.userId = r.userId and u.userEmail = " +
-            mysql.escape(localStorage.getItem('userEmail')) +
+            mysql.escape(req.session.userEmail) +
             "and u.accountType = " +
             2;
           conn.query(sql1, (err, result1) => {
@@ -587,7 +590,7 @@ app.post("/itemsbasedonsections", (req, res) => {
   //deleteItem
   app.put("/deleteitem", (req, res) => {
     console.log("Inside delete item details",req.body);
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
       pool.getConnection((err, conn) => {
         if (err) {
           console.log("Error while creating connection");
@@ -623,7 +626,7 @@ app.post("/itemsbasedonsections", (req, res) => {
 //update section
 app.put("/updateSection", (req, res) => {
     console.log("Inside update section");
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
       pool.getConnection((err, conn) => {
         if (err) {
           console.log("Error while creating connection");
@@ -634,7 +637,7 @@ app.put("/updateSection", (req, res) => {
         } else {
           const sql1 =
             "SELECT r.restId from restaurants r, users u WHERE u.userId = r.userId and u.userEmail = " +
-            mysql.escape(localStorage.getItem('userEmail')) +
+            mysql.escape(req.session.userEmail) +
             "and u.accountType = " +
             2;
           conn.query(sql1, (err, result1) => {
@@ -676,7 +679,7 @@ app.put("/updateSection", (req, res) => {
   //delete section
 app.put("/deletesection", (req, res) => {
     console.log("Inside delete section");
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
       pool.getConnection((err, conn) => {
         if (err) {
           console.log("Error while creating connection");
@@ -687,7 +690,7 @@ app.put("/deletesection", (req, res) => {
         } else {
           const sql1 =
             "SELECT r.restId from restaurants r, users u WHERE u.userId = r.userId and u.userEmail = " +
-            mysql.escape(localStorage.getItem('userEmail')) +
+            mysql.escape(req.session.userEmail) +
             "and u.accountType = " +
             2;
           conn.query(sql1, (err, result1) => {
@@ -719,47 +722,6 @@ app.put("/deletesection", (req, res) => {
           });
         }
       });
-    }
-  });
-
-//AllCuisines
-app.get('/getCuisines', (req, res) => {
-    console.log("In getCuisines");
-  
-    if (localStorage.getItem('userEmail')) {
-        pool.getConnection((err, conn) => {
-            if (err) {
-                console.log("Error while connecting to database");
-                res.writeHead(500, {
-                    'Content-type': 'text/plain'
-                });
-                res.end("Error while connecting to database");
-            } else {
-                //query
-                const sql = `SELECT DISTINCT cuisineName, cuisineImage FROM items`;
-                //console.log(sql);
-                conn.query(sql, (err, result) => {
-                    if (err) {
-                        res.writeHead(400, {
-                            'Content-type': 'text/plain'
-                        });
-                        res.end("Couldnt get cuisine names");
-                    } else {
-                        if (result.length == 0) {
-                            res.writeHead(401, {
-                                'Content-type': 'text/plain'
-                            });
-                            res.end("Sorry, No cuisines found");
-                        } else {
-                            res.writeHead(200, {
-                                'Content-type': 'application/json'
-                            });
-                            res.end(JSON.stringify(result));
-                        }
-                    }
-                });
-            }
-        });
     }
   });
 

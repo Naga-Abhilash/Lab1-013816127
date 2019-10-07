@@ -6,7 +6,7 @@ const app = express.Router();
 //OwnerALLORDERS
 app.get("/all-orders", (req, res) => {
     console.log("Inside all orders");
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
       pool.getConnection((err, conn) => {
         if (err) {
           console.log("Error while creating connection");
@@ -18,7 +18,7 @@ app.get("/all-orders", (req, res) => {
           const sql1 =
             "SELECT r.restId from restaurants r, users u WHERE u.userId = r.userId and u.userEmail = " 
             +
-            mysql.escape(localStorage.getItem('userEmail')) +
+            mysql.escape(req.session.userEmail) +
             "and u.accountType = " +
             2;
           console.log("sql1---" + sql1);
@@ -94,7 +94,7 @@ app.post('/orderItems', (req, res) => {
     console.log("In orderItems");
     console.log(req);
     var max = 0;
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
         pool.getConnection((err, conn) => {
             if (err) {
                 console.log(err);
@@ -111,7 +111,7 @@ app.post('/orderItems', (req, res) => {
                         console.log(result);
                         max = result[0].max;
   
-                        const sql1 = `SELECT * FROM cart WHERE userEmail= ${mysql.escape(localStorage.getItem('userEmail'))}`;
+                        const sql1 = `SELECT * FROM cart WHERE userEmail= ${mysql.escape(req.session.userEmail)}`;
   
                         console.log(sql1);
                         conn.query(sql1, (err, result) => {
@@ -132,7 +132,7 @@ app.post('/orderItems', (req, res) => {
                                             res.status(400).end("Please try again to order items");
                                         } else {
                                             console.log(result);
-                                            const sql2 = `DELETE FROM cart WHERE userEmail=${mysql.escape(localStorage.getItem('userEmail'))}`;
+                                            const sql2 = `DELETE FROM cart WHERE userEmail=${mysql.escape(req.session.userEmail)}`;
                                             console.log(sql2);
                                             conn.query(sql2, (err, result) => {
                                                 if (err) {
@@ -158,14 +158,14 @@ app.post('/orderItems', (req, res) => {
 app.post('/previousOrders', (req, res) => {
     console.log("In previous orders");
     console.log(req.body);
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
         pool.getConnection((err, conn) => {
             if (err) {
                 console.log(err);
                 res.status(500).end("Error while connecting to database");
             } else {
                 //query
-                const sql = `SELECT * FROM orders WHERE userEmail=${mysql.escape(localStorage.getItem('userEmail'))} AND
+                const sql = `SELECT * FROM orders WHERE userEmail=${mysql.escape(req.session.userEmail)} AND
                             orderStatus= "delivered"`;
                 console.log(sql);
   
@@ -218,7 +218,7 @@ app.post('/previousOrders', (req, res) => {
   //ManageOrders
   app.put("/manage-orders", (req, res) => {
     console.log("Inside Manage orders");
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
       pool.getConnection((err, conn) => {
         if (err) {
           console.log("Error while creating connection");
@@ -256,7 +256,7 @@ app.post('/previousOrders', (req, res) => {
   //upcomingOrders
   app.get("/upcomingOrders", (req, res) => {
     console.log("Inside upcoming orders");
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
         pool.getConnection((err, conn) => {
             if (err) {
                 console.log("Error while creating connection");
@@ -266,7 +266,7 @@ app.post('/previousOrders', (req, res) => {
                 res.end("Error while creating connection");
             } else {
                 const sql1 =
-                    `SELECT o.restId from orders o, users u WHERE u.userEmail = o.userEmail and u.userEmail = ${mysql.escape(localStorage.getItem('userEmail'))}
+                    `SELECT o.restId from orders o, users u WHERE u.userEmail = o.userEmail and u.userEmail = ${mysql.escape(req.session.userEmail)}
             AND u.accountType = 1`;
                 console.log(sql1);
   
@@ -279,8 +279,8 @@ app.post('/previousOrders', (req, res) => {
                         res.end("Error in getting restaurant id");
                     } else {
                         console.log(result1);
-                        const sql2 = `SELECT * FROM orders where orderStatus NOT IN ('cancelled','delivered') and restId IN (SELECT o.restId from orders o, users u WHERE u.userEmail = o.userEmail and u.userEmail = ${mysql.escape(localStorage.getItem('userEmail'))}
-                        AND u.accountType = 1) and userEmail = ${mysql.escape(localStorage.getItem('userEmail'))} order by orderId DESC`;
+                        const sql2 = `SELECT * FROM orders where orderStatus NOT IN ('cancelled','delivered') and restId IN (SELECT o.restId from orders o, users u WHERE u.userEmail = o.userEmail and u.userEmail = ${mysql.escape(req.session.userEmail)}
+                        AND u.accountType = 1) and userEmail = ${mysql.escape(req.session.userEmail)} order by orderId DESC`;
                         conn.query(sql2, (err, result2) => {
                             if (err) {
                                 console.log("Error in getting upcoming orders");

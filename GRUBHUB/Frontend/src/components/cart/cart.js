@@ -5,6 +5,7 @@ import rootUrl from '../config/settings';
 import axios from 'axios'
 import CartCard from './cartCard'
 import './cartCardcss.css'
+import {Redirect} from 'react-router';
 
 class Cart extends Component {
     constructor() {
@@ -72,6 +73,10 @@ class Cart extends Component {
 
     }
     render() {
+        let redirectVar;
+        if(localStorage.getItem("accountType")!=='1'){
+            redirectVar = <Redirect to= "/login"/>
+        }
         let cart = "";
         let route = '';
         if (this.state.cartItems) {
@@ -97,6 +102,7 @@ class Cart extends Component {
             return (
 
                 <div>
+                    {redirectVar}
                     <Navbar />
                     <div>
                         {cart}

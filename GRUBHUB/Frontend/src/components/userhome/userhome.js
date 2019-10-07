@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './homestyle.css';
 import { Redirect } from 'react-router-dom'
-import Navbar from '../Navbar/navbar'
+import NavBar from '../Navbar/navbar'
 import Background from '../../images/homeBackground.jpg';
 import axios from 'axios'
 import rootUrl from '../config/settings';
@@ -9,7 +9,7 @@ import swal from 'sweetalert'
 
 var sectionStyle = {
     width: "100%",
-    height: "650px",
+    height: "700px",
     backgroundImage: `url(${Background})`
 };
 
@@ -88,10 +88,10 @@ class Home extends Component {
         //     console.log(k)
         // }
 
-        // let redirectVar = null
-        // if (!localStorage.getItem('email')) {
-        //     redirectVar = <Redirect to='/login' />
-        // }
+        let redirectVar = null
+        if (localStorage.getItem('accountType')!=='1') {
+            redirectVar = <Redirect to='/login' />
+        }
         // if(localStorage.getItem('restaurantResults')){
         //     console.log("get item rest");
 
@@ -100,9 +100,8 @@ class Home extends Component {
 
         return (
             <div >
-                {/* {redirectVar} */}
-
-                <Navbar />
+                {redirectVar}
+                <NavBar />
                 <div style={sectionStyle} >
                     <div className="centerit">
                         <div className="col-12 col-md-10 col-lg-8">

@@ -5,7 +5,7 @@ import PreparingOrders from "./preparingorders";
 import DeliveryOrders from "./deliveryorders";
 import PastOrders from "./pastorders";
 // import cookie from 'react-cookies';
-// import {Redirect} from 'react-router';
+import {Redirect} from 'react-router';
 
 
 class OwnerHome extends Component{
@@ -46,10 +46,14 @@ class OwnerHome extends Component{
 
 
     render(){
-        // let redirectVar = null;
+        let redirectVar = null;
         // if(!cookie.load('cookie')){
         //     redirectVar = <Redirect to= "/login"/>
         // }
+        // let redirectVar;
+        if(localStorage.getItem("accountType")!=='2'){
+            redirectVar = <Redirect to= "/login"/>
+        }
         let selectedView = null
         if(this.state.option==='')
         {
@@ -85,7 +89,7 @@ class OwnerHome extends Component{
         }
         return(
             <div>
-            {/* {redirectVar} */}
+            {redirectVar}
             <NavBar/>
             <div className="container-fluid">
                 <div className="row">

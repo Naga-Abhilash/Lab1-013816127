@@ -22,11 +22,11 @@ const storage = multer.diskStorage({
 //get profile details
 app.get("/getprofile", (req, res) => {
     console.log("Inside get profile");
-    console.log(localStorage.getItem('userEmail'))
+    console.log(req.session.userEmail)
     // console.log("req.body", req.body);
     // if (req.session.userEmail) {
 
-      if (localStorage.getItem('userEmail')) {
+      if (req.session.userEmail) {
         pool.getConnection((err, conn) => {
           if (err) {
             console.log("Error while creating connection");
@@ -38,9 +38,9 @@ app.get("/getprofile", (req, res) => {
             //query
             console.log(
   
-              "mysql.escape(localStorage.getItem('userEmail'))" +
+              "mysql.escape(req.session.userEmail)" +
   
-                mysql.escape(localStorage.getItem('userEmail'))
+                mysql.escape(req.session.userEmail)
   
             );
   
@@ -48,7 +48,8 @@ app.get("/getprofile", (req, res) => {
   
               "SELECT * FROM users WHERE userEmail= " +
   
-              mysql.escape(localStorage.getItem('userEmail'));
+              mysql.escape(req.session.userEmail);
+              // mysql.escape(req.session.userEmail);
   
             // const sql2 = "SELECT RestaurantName, RestaurantAdr, RestaurantZip, RestaurantPhone FROM restaurant WHERE UserName= "+mysql.escape(req.body.UserName);
   
@@ -165,7 +166,7 @@ app.put("/updateprofile", (req, res) => {
   
  
   
-    if (localStorage.getItem('userEmail')) {
+    if (req.session.userEmail) {
   
         pool.getConnection((err, conn) => {
   
@@ -187,7 +188,7 @@ app.put("/updateprofile", (req, res) => {
   
               "SELECT userId from users WHERE userEmail = " +
   
-              mysql.escape(localStorage.getItem('userEmail'));
+              mysql.escape(req.session.userEmail);
   
             console.log("sql1---" + sql1);
   

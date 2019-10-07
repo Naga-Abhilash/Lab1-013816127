@@ -6,9 +6,11 @@ class ItemDetails extends Component{
     // }
     render(){
         let item = this.props.itemsInOrder
+        let orderTotal = 0;
         console.log("item in itemorders file:", item);
         let itemDetails=item.map((i) => {
             console.log("i",i)
+            orderTotal += i.itemTotal;
         let {  itemName, itemQuantity, itemPrice, itemTotal } = i;
         return (
             <div>
@@ -23,7 +25,11 @@ class ItemDetails extends Component{
             </div>
         );
     })
-    return itemDetails
+    return (
+    <div>
+        {itemDetails}
+        <p className="card-text font-weight-bold">Order Total: {orderTotal}</p>
+    </div>)
 }
 }
 export default ItemDetails;

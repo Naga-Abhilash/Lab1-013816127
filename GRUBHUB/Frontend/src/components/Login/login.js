@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {Link} from "react-router-dom";
-import logo from '../../images/login-page-burger.png'
+import logo from '../../images/login-page.jpg'
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
@@ -73,9 +73,9 @@ submitLogin = (details) => {
         if(localStorage.getItem("accountType")==="2"){
              redirectVar = <Redirect to= "/ownerhome"/>
         }
-        if(localStorage.getItem("accountType")==="1"){
+        else if(localStorage.getItem("accountType")==="1"){
             console.log('hello')
-             redirectVar =<Redirect to="/userhome"/>
+             redirectVar = <Redirect to="/userhome"/>
         }
     }
         return (                                
@@ -136,8 +136,8 @@ submitLogin = (details) => {
                                                 <br/>
                                                 <button
                                                     type="submit"
-                                                    id="signin"
-                                                    className="btn btn-block text-white font-weight-bold"
+                                                    // id="signin"
+                                                    className="btn btn-success btn-block text-white font-weight-bold"
                                                     // disabled={!isSubmitting}
                                                 >
                                                     {/* {isSubmitting ? "Please wait..." : "Sign in"} */}

@@ -1,11 +1,11 @@
 const mysql = require('mysql');
 
 var pool = mysql.createPool({
-    connectionLimit:100,
+    connectionLimit:1000,
     host: 'localhost',
     user: 'root',
-    password: '7777',
-    database: 'grubhubdb'
+    password: '123456',
+    database: 'grubhub'
 });
 
 module.exports = pool;

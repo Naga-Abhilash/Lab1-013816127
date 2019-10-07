@@ -8,7 +8,7 @@ import './restHome.css'
 import RestCuisines from './restCuisines'
 import swal from 'sweetalert';
 
-var images = require.context('../../../../backend/uploads/', true);
+// var images = require.context('../../../../backend/uploads/', true);
 
 class RestaurantHome extends Component {
     constructor() {

@@ -78,10 +78,12 @@ class NewOrders extends Component{
 
     render(){
         let newOrderDetails;
+       
         
         newOrderDetails = this.state.orders.map((order) => {
+           
             // i=i+1;
-            console.log("order status",order.userOrder[0].orderStatus)
+            // console.log("order status",order.userOrder[0].orderStatus)
              if(order.userOrder[0].orderStatus==="New"){
                 return (
                     <div className="card">

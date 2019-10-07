@@ -26,6 +26,8 @@ const SignUpSchema = Yup.object().shape({
     .required("Phone number is required"),
   restName: Yup.string()
     .required("Restaurant name is required"),
+ restDesc: Yup.string()
+    .required("Restaurant description is required"),
   restPhone: Yup.string()
     .matches(phoneRegExp, 'Phone number is not valid')
     .required("Restaurant phone number is required"),
@@ -55,6 +57,7 @@ submitSignup = (details) => {
         userAddress: "default",
         userZip: "default",
         restAddress:details.restAddress,
+        restDesc:details.restDesc,
         restName:details.restName,
         restPhone:details.restPhone,
         restZip:details.restZip,
@@ -102,7 +105,7 @@ submitSignup = (details) => {
                                     <h4 className="text-black text-left font-weight-bold">Create your owner account!</h4>
                                     <br/>
                                     <Formik
-                                        initialValues={{ userName: "", email:"" , password: "", userPhone:"", restAddress:"", restName:"",restPhone:"",restZip:"" }}
+                                        initialValues={{ userName: "", email:"" , password: "", userPhone:"", restDesc:"", restAddress:"", restName:"",restPhone:"",restZip:"" }}
                                         validationSchema={SignUpSchema}
                                         onSubmit={(values, actions) => {
                                           this.submitSignup(values)
@@ -194,6 +197,24 @@ submitSignup = (details) => {
                                                     <ErrorMessage
                                                         component="div"
                                                         name="restName"
+                                                        align="text-left"
+                                                        className="invalid-feedback"
+                                                    />
+                                                </div>
+
+                                                <div className="form-group text-left">
+                                                <label htmlFor="restDesc">Restaurant description</label>
+                                                    <Field
+                                                          type="text"
+                                                          name="restDesc"
+                                                        //   autofocus="true"
+                                                          className={`form-control ${
+                                                          touched.restDesc && errors.restDesc ? "is-invalid" : ""
+                                                          }`}
+                                                    />
+                                                    <ErrorMessage
+                                                        component="div"
+                                                        name="restDesc"
                                                         align="text-left"
                                                         className="invalid-feedback"
                                                     />
